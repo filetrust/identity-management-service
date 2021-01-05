@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  service:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - TokenSecret=IamAVeryLongAndDodgeySecret
+      - TokenLifetime=00:01:00
+    ports:
+      - "6004:80"
+      - "6005:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - C:\Shares\users:/mnt/users

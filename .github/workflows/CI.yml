@@ -44,14 +44,14 @@ jobs:
         git config user.email github-actions@github.com
         git config user.name github-actions
         
-        # update imagestore.policymanagementapi.tag value in the values.yaml file
-        yq write administration/values.yaml imagestore.policymanagementapi.tag $IMAGE_TAG -i
+        # update imagestore.identitymanagementservice.tag value in the values.yaml file
+        yq write administration/values.yaml imagestore.identitymanagementservice.tag $IMAGE_TAG -i
         git add administration/values.yaml
         git commit -m 'update image tag'
         git push origin $IMAGE_TAG
         
         # create a pull request from a new branch to target branch, merge the PR and delete the source branch.
-        gh pr create --base ${{ env.TAG }} --title "Update policy-management-api image tag to $IMAGE_TAG" --body ""
+        gh pr create --base ${{ env.TAG }} --title "Update identity-management-service image tag to $IMAGE_TAG" --body ""
         sleep 5s
         gh pr merge $IMAGE_TAG -s
       env:
@@ -59,6 +59,7 @@ jobs:
 
 
   merge-to-main:
+    needs: [build-push-docker-image]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️

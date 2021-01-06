@@ -99,18 +99,18 @@ namespace Glasswall.PolicyManagement.Api
 
             app.UseRouting();
             
-            //app.Use((context, next) =>
-            //{
-            //    context.Response.Headers["Access-Control-Allow-Methods"] = "*";
-            //    context.Response.Headers["Access-Control-Expose-Headers"] = "*";
-            //    context.Response.Headers["Access-Control-Allow-Headers"] = "*";
-            //    context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+            app.Use((context, next) =>
+            {
+                context.Response.Headers["Access-Control-Allow-Methods"] = "*";
+                context.Response.Headers["Access-Control-Expose-Headers"] = "*";
+                context.Response.Headers["Access-Control-Allow-Headers"] = "*";
+                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
 
-            //    if (context.Request.Method != "OPTIONS") return next.Invoke();
+                if (context.Request.Method != "OPTIONS") return next.Invoke();
 
-            //    context.Response.StatusCode = 200;
-            //    return context.Response.WriteAsync("OK");
-            //});
+                context.Response.StatusCode = 200;
+                return context.Response.WriteAsync("OK");
+            });
 
             app.UseCors(x => x
                 .AllowAnyOrigin()

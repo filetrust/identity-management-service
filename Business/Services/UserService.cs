@@ -29,7 +29,7 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
         public async IAsyncEnumerable<User> GetAllAsync([EnumeratorCancellation]CancellationToken cancellationToken)
         {
-            await foreach (var filePath in _fileStore.SearchAsync("", new CollectTopLevelPaths(), cancellationToken))
+            await foreach (var filePath in _fileStore.SearchAsync("", new UserMetadataSearchStrategy(), cancellationToken))
             {
                 yield return await InternalDownloadAsync(filePath, cancellationToken);
             }

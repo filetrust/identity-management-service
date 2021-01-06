@@ -102,13 +102,13 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody][Required]UpdateModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody][Required]UpdateModel model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.Values);
 
             await _userService.UpdateAsync(new User
             {
-                Id = model.Id,
+                Id = id,
                 FirstName = model.FirstName,
                 Username = model.Username,
                 LastName = model.LastName

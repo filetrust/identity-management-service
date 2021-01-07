@@ -4,16 +4,13 @@ info:
   description: These are HTTP endpoints that query the user store and authenticate users
   version: 0.1.9
 servers:
-  - url: http://localhost:6006
+  - url: https://localhost:6006
     description: Local K8
-  - url: http://localhost:6005
+  - url: https://localhost:6005
     description: Local debug
 
 components:
   securitySchemes:
-    basicAuth:     # <-- arbitrary name for the security scheme
-      type: http
-      scheme: basic   
     bearerAuth:            # arbitrary name for the security scheme
       type: http
       scheme: bearer

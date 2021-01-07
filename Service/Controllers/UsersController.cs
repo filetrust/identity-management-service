@@ -92,6 +92,9 @@ namespace WebApi.Controllers
         {
             var user = await _userService.GetByIdAsync(id, cancellationToken);
 
+            if (user == null)
+                return BadRequest(new { message = "User does not exist" });
+
             return Ok(new UserModel
             {
                 Id = id,

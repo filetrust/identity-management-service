@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/identity-management-service/static/css/main.242960d0.chunk.css",
+    "main.js": "/identity-management-service/static/js/main.800f6113.chunk.js",
+    "main.js.map": "/identity-management-service/static/js/main.800f6113.chunk.js.map",
+    "runtime-main.js": "/identity-management-service/static/js/runtime-main.fbe8c7a1.js",
+    "runtime-main.js.map": "/identity-management-service/static/js/runtime-main.fbe8c7a1.js.map",
+    "static/css/2.ecb7c289.chunk.css": "/identity-management-service/static/css/2.ecb7c289.chunk.css",
+    "static/js/2.38b3ade1.chunk.js": "/identity-management-service/static/js/2.38b3ade1.chunk.js",
+    "static/js/2.38b3ade1.chunk.js.map": "/identity-management-service/static/js/2.38b3ade1.chunk.js.map",
+    "index.html": "/identity-management-service/index.html",
+    "precache-manifest.fe2e63cdc0e5fa1b5b90a1c134f1057c.js": "/identity-management-service/precache-manifest.fe2e63cdc0e5fa1b5b90a1c134f1057c.js",
+    "service-worker.js": "/identity-management-service/service-worker.js",
+    "static/css/2.ecb7c289.chunk.css.map": "/identity-management-service/static/css/2.ecb7c289.chunk.css.map",
+    "static/css/main.242960d0.chunk.css.map": "/identity-management-service/static/css/main.242960d0.chunk.css.map",
+    "static/js/2.38b3ade1.chunk.js.LICENSE.txt": "/identity-management-service/static/js/2.38b3ade1.chunk.js.LICENSE.txt",
+    "static/media/api.yaml": "/identity-management-service/static/media/api.d63e005b.yaml",
+    "static/media/App.css": "/identity-management-service/static/media/roboto-regular-webfont.d96d07c1.woff2",
+    "static/media/logo.svg": "/identity-management-service/static/media/logo.6c8e5727.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fbe8c7a1.js",
+    "static/css/2.ecb7c289.chunk.css",
+    "static/js/2.38b3ade1.chunk.js",
+    "static/css/main.242960d0.chunk.css",
+    "static/js/main.800f6113.chunk.js"
+  ]
+}

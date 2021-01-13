@@ -11,7 +11,8 @@ namespace Glasswall.IdentityManagementService.Common.Services
         Task<User> AuthenticateAsync(string username, string password, CancellationToken cancellationToken);
         IAsyncEnumerable<User> GetAllAsync(CancellationToken cancellationToken);
         Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<User> CreateAsync(User user, string password, CancellationToken cancellationToken);
+        Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken);
+        Task<User> CreateAsync(User user, CancellationToken cancellationToken);
         Task UpdateAsync(User user, string password, CancellationToken cancellationToken);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
     }

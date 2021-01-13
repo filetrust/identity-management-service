@@ -1,30 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Glasswall.IdentityManagementService.Api.ActionFilters;
+using Glasswall.IdentityManagementService.Common.Configuration;
 using Glasswall.IdentityManagementService.Common.Models.Dto;
 using Glasswall.IdentityManagementService.Common.Models.Store;
 using Glasswall.IdentityManagementService.Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace WebApi.Controllers
+namespace Glasswall.IdentityManagementService.Api.Controllers
 {
     [Authorize]
     [ApiController]
+    [ServiceFilter(typeof(ModelStateValidationActionFilterAttribute))]
     [Route("api/v1/[controller]")]
     public class UsersController : ControllerBase
     {
-        private IUserService _userService;
-        private ITokenService _tokenService;
+        private readonly IIdentityManagementServiceConfiguration _identityManagementServiceConfiguration;
+        private readonly IUserService _userService;
+        private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
 
         public UsersController(
+            IIdentityManagementServiceConfiguration identityManagementServiceConfiguration,
             IUserService userService,
-            ITokenService tokenService)
+            ITokenService tokenService,
+            IEmailService emailService)
         {
+            _identityManagementServiceConfiguration = identityManagementServiceConfiguration ?? throw new ArgumentNullException(nameof(identityManagementServiceConfiguration));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         [AllowAnonymous]
@@ -35,9 +45,9 @@ namespace WebApi.Controllers
 
             var user = await _userService.AuthenticateAsync(model.Username, model.Password, cancellationToken);
 
-            if (user == null) return BadRequest(new { message = "Username or password is incorrect" });
+            if (user == null) return Unauthorized(new { message = "Username or password is incorrect" });
 
-            var token = _tokenService.GetToken(user.Id.ToString());
+            var token = _tokenService.GetToken(user.Id.ToString(), _identityManagementServiceConfiguration.TokenSecret, _identityManagementServiceConfiguration.TokenLifetime);
 
             // return basic user info and authentication token
             return Ok(new
@@ -51,36 +61,73 @@ namespace WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody]RegisterModel model, CancellationToken cancellationToken)
+        [HttpPost("new")]
+        public async Task<IActionResult> New([FromBody]RegisterModel model, CancellationToken cancellationToken)
+        {
+            var id = Guid.NewGuid();
+
+            var createdUser = await _userService.CreateAsync(new User
+            {
+                Id = id,
+                Username = model.Username,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email
+            }, cancellationToken);
+
+            var confirmEmailToken = _tokenService.GetToken(
+                createdUser.Id.ToString(), 
+                string.Join(null, createdUser.PasswordHash),
+                _identityManagementServiceConfiguration.TokenLifetime);
+
+            await _emailService.SendAsync(new NewUserEmail(createdUser, _identityManagementServiceConfiguration, confirmEmailToken), cancellationToken);
+
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("reset")]
+        public async Task<IActionResult> Reset([FromQuery] string username, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.Values);
 
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Username = model.Username
-            };
+            User associatedUser = null;
 
-            await _userService.CreateAsync(user, model.Password, cancellationToken);
+            await foreach (var user in _userService.GetAllAsync(cancellationToken))
+            {
+                if (user.Username == username)
+                    associatedUser = user;
+            }
+
+            if (associatedUser == null)
+                return BadRequest(new { message = $"{username} was not found" });
+
+            var resetToken = _tokenService.GetToken(
+                associatedUser.Id.ToString(),
+                string.Join(null, associatedUser.PasswordHash),
+                _identityManagementServiceConfiguration.TokenLifetime
+            );
+
+            await _emailService.SendAsync(new ResetPasswordEmail(associatedUser, _identityManagementServiceConfiguration, resetToken), cancellationToken);
+
             return Ok();
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var users = new List<UserModel>();
+            var users = new List<object>();
 
             await foreach (var x in _userService.GetAllAsync(cancellationToken))
             {
-                users.Add(new UserModel
+                users.Add(new 
                 {
-                    FirstName = x.FirstName,
-                    Id = x.Id,
-                    LastName = x.LastName,
-                    Username = x.Username
+                    x.Id,
+                    x.FirstName,
+                    x.LastName,
+                    x.Username,
+                    x.Email,
+                    x.Status
                 });
             };
 
@@ -95,12 +142,14 @@ namespace WebApi.Controllers
             if (user == null)
                 return BadRequest(new { message = "User does not exist" });
 
-            return Ok(new UserModel
+            return Ok(new
             {
-                Id = id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Username = user.Username
+                user.Id,
+                user.FirstName,
+                user.LastName,
+                user.Username,
+                user.Email,
+                user.Status
             });
         }
 

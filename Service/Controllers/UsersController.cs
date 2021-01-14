@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
+using Glasswall.IdentityManagementService.Common.Models.Email;
 
 namespace Glasswall.IdentityManagementService.Api.Controllers
 {
@@ -32,7 +33,6 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
         {
             _identityManagementServiceConfiguration = identityManagementServiceConfiguration ?? throw new ArgumentNullException(nameof(identityManagementServiceConfiguration));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
@@ -41,8 +41,6 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]AuthenticateModel model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.Values);
-
             var user = await _userService.AuthenticateAsync(model.Username, model.Password, cancellationToken);
 
             if (user == null) return Unauthorized(new { message = "Username or password is incorrect" });
@@ -82,25 +80,23 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
 
             await _emailService.SendAsync(new NewUserEmail(createdUser, _identityManagementServiceConfiguration, confirmEmailToken), cancellationToken);
 
-            return Ok();
+            return Ok(new { message = "Registration successful, please check your email for verification instructions" });
         }
 
         [AllowAnonymous]
-        [HttpPost("reset")]
-        public async Task<IActionResult> Reset([FromQuery] string username, CancellationToken cancellationToken)
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.Values);
-
             User associatedUser = null;
 
             await foreach (var user in _userService.GetAllAsync(cancellationToken))
             {
-                if (user.Username == username)
+                if (user.Username == model.Username)
                     associatedUser = user;
             }
 
             if (associatedUser == null)
-                return BadRequest(new { message = $"{username} was not found" });
+                return BadRequest(new { message = $"{model.Username} was not found" });
 
             var resetToken = _tokenService.GetToken(
                 associatedUser.Id.ToString(),
@@ -108,9 +104,51 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
                 _identityManagementServiceConfiguration.TokenLifetime
             );
 
-            await _emailService.SendAsync(new ResetPasswordEmail(associatedUser, _identityManagementServiceConfiguration, resetToken), cancellationToken);
+            await _emailService.SendAsync(new ForgotPasswordEmail(associatedUser, _identityManagementServiceConfiguration, resetToken), cancellationToken);
 
-            return Ok();
+            return Ok(new { message = "Password reset successful, please check your email for verification instructions" });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("validate-reset-token")]
+        public async Task<IActionResult> ValidateResetToken([Required]ValidateResetTokenModel model, CancellationToken cancellationToken)
+        {
+            if (!Guid.TryParse(_tokenService.GetIdentifier(model.Token), out var userId))
+                return BadRequest(new { message = "Token identifier was not valid" });
+
+            var currentUserDetails = await _userService.GetByIdAsync(userId, cancellationToken);
+
+            if (currentUserDetails == null)
+                return BadRequest(new { message = "User was not found" });
+
+            // If the current users password can decode incoming token, this is a valid request
+            if (!_tokenService.ValidateSignature(model.Token, string.Join(null, currentUserDetails.PasswordHash)))
+                return BadRequest(new { message = "Token signature does not match." });
+
+            return Ok(new { message = "Token is valid" });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel model, CancellationToken cancellationToken)
+        {
+            if (!Guid.TryParse(_tokenService.GetIdentifier(model.Token), out var userId))
+                return BadRequest(new { message = "Token identifier was not valid" });
+
+            var currentUserDetails = await _userService.GetByIdAsync(userId, cancellationToken);
+
+            if (currentUserDetails == null)
+                return BadRequest(new { message = "User was not found" });
+
+            // If the current users password can decode incoming token, this is a valid request
+            if (!_tokenService.ValidateSignature(model.Token, string.Join(null, currentUserDetails.PasswordHash)))
+                return BadRequest(new { message = "Token signature does not match." });
+
+            await _userService.UpdatePasswordAsync(currentUserDetails, model.Password, cancellationToken);
+
+            await _emailService.SendAsync(new PasswordSetConfirmationEmail(currentUserDetails, _identityManagementServiceConfiguration), cancellationToken);
+
+            return Ok(new { message = "Password reset successful, you can now login" });
         }
 
         [HttpGet]
@@ -129,7 +167,7 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
                     x.Email,
                     x.Status
                 });
-            };
+            }
 
             return Ok(users);
         }
@@ -149,22 +187,21 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
                 user.LastName,
                 user.Username,
                 user.Email,
-                user.Status
+                user.Status,
             });
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody][Required]UpdateModel model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.Values);
-
             await _userService.UpdateAsync(new User
             {
                 Id = id,
                 FirstName = model.FirstName,
                 Username = model.Username,
-                LastName = model.LastName
-            }, model.Password, cancellationToken);
+                LastName = model.LastName,
+                Email = model.Email
+            }, cancellationToken);
 
             return Ok();
         }

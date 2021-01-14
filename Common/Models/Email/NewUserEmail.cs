@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glasswall.IdentityManagementService.Common.Configuration;
-using Glasswall.IdentityManagementService.Common.Models.Email;
 using Glasswall.IdentityManagementService.Common.Models.Store;
 
-namespace Glasswall.IdentityManagementService.Api.Controllers
+namespace Glasswall.IdentityManagementService.Common.Models.Email
 {
     public class NewUserEmail : EmailModel
     {
@@ -19,9 +18,17 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
             _confirmEmailToken = confirmEmailToken ?? throw new ArgumentNullException(nameof(confirmEmailToken));
         }
 
-        public override string Body => $"Please confirm your email at '{_config.ManagementUIEndpoint}/confirm?token={_confirmEmailToken}";
+        public override string Body => GetHtmlBody();
+
         public override string Subject => "New user notification";
-        public override string EmailFrom => "Glasswall";
+
+        public override string EmailFrom => "admin@glasswallsolutions.com";
+
         public override IEnumerable<string> EmailTo => new[] { _createdUser.Email };
+
+        private string GetHtmlBody()
+        {
+            return $"Please confirm your email <a href=\"{_config.ManagementUIEndpoint}/confirm?token={_confirmEmailToken}\">here</a>";
+        }
     }
 }

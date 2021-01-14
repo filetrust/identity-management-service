@@ -6,7 +6,7 @@ namespace Glasswall.IdentityManagementService.Common.Configuration
     {
         public string TokenSecret { get; set; }
         public TimeSpan TokenLifetime { get; set; }
-        public string ManagementUIEndpoint { get; }
+        public string ManagementUIEndpoint { get; set; }
     }
 
     public interface IIdentityManagementServiceConfiguration

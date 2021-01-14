@@ -133,7 +133,8 @@ namespace Glasswall.IdentityManagementService.Api
         {
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.TokenLifetime));
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.TokenSecret));
-            
+            ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint));
+
             var businessConfig = new IdentityManagementServiceConfiguration();
 
             configuration.Bind(businessConfig);

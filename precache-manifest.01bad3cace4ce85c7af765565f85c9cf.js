@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "424819c1046ad78182bd17760155447e",
+    "revision": "234592645039466c901dbe0aaf785dd4",
     "url": "/identity-management-service/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/identity-management-service/static/css/2.ecb7c289.chunk.css"
   },
   {
-    "revision": "f261430a9319fe25fbe4",
+    "revision": "a8e9427e69fe7bbf7a39",
     "url": "/identity-management-service/static/css/main.242960d0.chunk.css"
   },
   {
@@ -20,16 +20,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/identity-management-service/static/js/2.38b3ade1.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f261430a9319fe25fbe4",
-    "url": "/identity-management-service/static/js/main.800f6113.chunk.js"
+    "revision": "a8e9427e69fe7bbf7a39",
+    "url": "/identity-management-service/static/js/main.701ef1fe.chunk.js"
   },
   {
     "revision": "fb274781da6eba2c92aa",
     "url": "/identity-management-service/static/js/runtime-main.fbe8c7a1.js"
   },
   {
-    "revision": "d63e005b00aa2d8cb918971ceb4b189c",
-    "url": "/identity-management-service/static/media/api.d63e005b.yaml"
+    "revision": "8c2bb99458f7f6814f898c0d8403424d",
+    "url": "/identity-management-service/static/media/api.8c2bb994.yaml"
   },
   {
     "revision": "8503c64fa486375dc20b3c00aa2e250a",

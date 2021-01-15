@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Glasswall.IdentityManagementService.Common.Store;
+using System;
 using System.Linq;
-using Glasswall.IdentityManagementService.Common.Store;
 
-namespace Glasswall.IdentityManagementService.Business.Services
+namespace Glasswall.IdentityManagementService.Business.Store
 {
     public class UserMetadataSearchStrategy : IPathActions
     {

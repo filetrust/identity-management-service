@@ -1,10 +1,4 @@
-using System;
-using System.Configuration;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using Glasswall.IdentityManagementService.Api.ActionFilters;
 using Glasswall.IdentityManagementService.Business.Services;
 using Glasswall.IdentityManagementService.Business.Store;
 using Glasswall.IdentityManagementService.Common.Configuration;
@@ -20,8 +14,15 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Glasswall.PolicyManagement.Api
+namespace Glasswall.IdentityManagementService.Api
 {
     [ExcludeFromCodeCoverage]
     public class Startup
@@ -47,6 +48,8 @@ namespace Glasswall.PolicyManagement.Api
             services.TryAddTransient<IUserService, UserService>();
             services.TryAddTransient<ITokenService, JwtTokenService>();
             services.TryAddTransient<IFileStore>(sp => new MountedFileStore(sp.GetRequiredService<ILogger<MountedFileStore>>(), "/mnt/users"));
+            services.AddScoped<ModelStateValidationActionFilterAttribute>();
+            services.AddTransient<IEmailService, EmailService>();
 
             services.AddLogging(logging =>
             {
@@ -130,7 +133,8 @@ namespace Glasswall.PolicyManagement.Api
         {
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.TokenLifetime));
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.TokenSecret));
-            
+            ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint));
+
             var businessConfig = new IdentityManagementServiceConfiguration();
 
             configuration.Bind(businessConfig);

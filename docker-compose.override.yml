@@ -5,8 +5,13 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - TokenSecret=IamAVeryLongAndDodgeySecret
+      - TokenSecret=
       - TokenLifetime=00:01:00
+      - SmtpHost=
+      - SmtpPort=
+      - SmtpUser=
+      - SmtpPass=
+      - ManagementUIEndpoint=
     ports:
       - "6004:80"
       - "6005:443"

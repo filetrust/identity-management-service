@@ -49,3 +49,4 @@ LocalDatabase.db
 .vs/IdentityManagementService/config/applicationhost.config
 .vs/IdentityManagementService/DesignTimeBuild/.dtbcache.v2
 .vs/IdentityManagementService/v16/.suo
+docker-compose.override.yml

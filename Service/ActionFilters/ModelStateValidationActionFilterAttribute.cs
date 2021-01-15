@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,7 @@ namespace Glasswall.IdentityManagementService.Api.ActionFilters
         {
             if (context.ModelState.ErrorCount > 0)
             {
-                context.Result = new BadRequestObjectResult(context.ModelState);
+                context.Result = new BadRequestObjectResult(new {errors = context.ModelState.ToArray()});
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ModelStateValidationActionFilterAttribute>>();
                 logger.LogInformation("Request contained bad data");
             }

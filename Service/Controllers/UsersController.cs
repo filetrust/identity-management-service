@@ -111,7 +111,7 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("validate-reset-token")]
-        public async Task<IActionResult> ValidateResetToken([Required]ValidateResetTokenModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> ValidateResetToken([FromBody]ValidateResetTokenModel model, CancellationToken cancellationToken)
         {
             if (!Guid.TryParse(_tokenService.GetIdentifier(model.Token), out var userId))
                 return BadRequest(new { message = "Token identifier was not valid" });
@@ -130,7 +130,7 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordModel model, CancellationToken cancellationToken)
         {
             if (!Guid.TryParse(_tokenService.GetIdentifier(model.Token), out var userId))
                 return BadRequest(new { message = "Token identifier was not valid" });
@@ -207,7 +207,7 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             await _userService.DeleteAsync(id, cancellationToken);
 

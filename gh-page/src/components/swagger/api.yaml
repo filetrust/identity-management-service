@@ -4,10 +4,10 @@ info:
   description: These are HTTP endpoints that query the user store and authenticate users
   version: 0.1.9
 servers:
-  - url: https://localhost:6006
-    description: Local K8
   - url: https://localhost:6005
     description: Local debug
+  - url: https://localhost:6006
+    description: Local K8
 
 components:
   securitySchemes:
@@ -61,12 +61,19 @@ paths:
                   token:
                     type: string
                     description: This is a JWT bearer token used in authorization of subsequent requests
-  /api/v1/users/register:
+        415:
+          $ref: '#/Models/UnsupportedMediaType'
+        401:
+          $ref: '#/Models/Unauthorized'
+        400:
+          $ref: '#/Models/BadRequest'
+        500:
+          $ref: '#/Models/InternalServerError'
+                      
+  /api/v1/users/new:
     post:
-      security:
-        - bearerAuth: []
-      summary: Registers a user with username and password and other metadata
-      description: Registers a user with username and password and other metadata. The user is saved to a file store.
+      summary: Registers a user in the user store and sends them an email to complete the process.
+      description: Registers a user in the user store and sends them an email to complete the process. A random password is generated and used for the signing of the token used to validate the request.
       requestBody:
         content:
           "application/json":
@@ -74,21 +81,25 @@ paths:
               type: object
               required:
                 - "Username"
-                - "Password"
+                - "Email"
                 - "FirstName"
                 - "LastName"
               properties:
                 Username:
                   type: string
-                Password:
+                  description: The username that the user will log in with
+                  example: ExampleUser
+                Email:
                   type: string
+                  description: The email for the user. This is used to send the confirmation email.
+                  example: example-user@usersdomain.com
                 FirstName:
                   type: string
-                  example: John
+                  example: Example
                   description: This field is the first name of the user
                 LastName:
                   type: string
-                  example: Doe
+                  example: User
                   description: This field is the last name of the user
       responses:
         200:
@@ -97,6 +108,121 @@ paths:
             "application/json":
               schema:
                 type: object
+                properties:
+                  message:
+                    type: string
+                    example: Registration successful, please check your email for verification instructions
+        415:
+          $ref: '#/Models/UnsupportedMediaType'
+        400:
+          $ref: '#/Models/BadRequest'
+        500:
+          $ref: '#/Models/InternalServerError'
+  /api/v1/users/forgot-password:
+    post:
+      summary: Triggers a 'Forgotten Password' event for the specified user.
+      description: Triggers a 'Forgotten Password' event for the specified user. An email is sent with a verification token used to reset the users password
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              required:
+                - "Username"
+              properties:
+                Username:
+                  type: string
+                  description: The username that the user will log in with
+                  example: ExampleUser
+      responses:
+        200:
+          description: OK - The request was successful
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Password has been reset, check your emails for further instructions.                  
+        415:
+          $ref: '#/Models/UnsupportedMediaType'
+        400:
+          $ref: '#/Models/BadRequest'
+        500:
+          $ref: '#/Models/InternalServerError'
+  /api/v1/users/validate-reset-token:
+    post:
+      summary: Validates a reset password token. 
+      description: Validates a reset password token. User data is not changed.
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              required:
+                - "Token"
+              properties:
+                Token:
+                  type: string
+                  description: This is a JWT token signed with the users password at the time of signing.
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ijc1MDJlNGI3LTlhYjAtNGE2ZC05OTUxLTNhOWYwM2FkZTk1MiIsIm5iZiI6MTYxMDcwOTE4NCwiZXhwIjoxNjEwNzA5MjQ0LCJpYXQiOjE2MTA3MDkxODR9.VFtZd3nUugBUnabB5HVGMByl3nPrvM2et0Rg4AgHbLE
+      responses:
+        200:
+          description: OK - The request was successful
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Token is valid
+        415:
+          $ref: '#/Models/UnsupportedMediaType'
+        400:
+          $ref: '#/Models/BadRequest'
+        500:
+          $ref: '#/Models/InternalServerError'
+          
+  /api/v1/users/reset-password:
+    post:
+      summary: Resets the password of a given user. 
+      description: Resets the password of a given user. The token must still be valid before data is changed.
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              required:
+                - "Token"
+                - "Password"
+              properties:
+                Token:
+                  type: string
+                  description: This is a JWT token signed with the users password at the time of signing.
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ijc1MDJlNGI3LTlhYjAtNGE2ZC05OTUxLTNhOWYwM2FkZTk1MiIsIm5iZiI6MTYxMDcwOTE4NCwiZXhwIjoxNjEwNzA5MjQ0LCJpYXQiOjE2MTA3MDkxODR9.VFtZd3nUugBUnabB5HVGMByl3nPrvM2et0Rg4AgHbLE
+                Password:
+                  type: string
+                  description: The new password that the user will log in with
+                  example: Password1234
+      responses:
+        200:
+          description: OK - The request was successful
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Password reset successful, you can now login
+        415:
+          $ref: '#/Models/UnsupportedMediaType'
+        400:
+          $ref: '#/Models/BadRequest'
+        500:
+          $ref: '#/Models/InternalServerError'
   /api/v1/users:
     get:
       security:
@@ -111,25 +237,9 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    Id:
-                      type: string
-                      example: 0127f5eb-da80-4a8b-9fea-6b8c33536745
-                      description: This field is a unique identifier for the user
-                    Username:
-                      type: string
-                      description: The username the user logs in with
-                    FirstName:
-                      type: string
-                      example: John
-                      description: This field is the first name of the user
-                    LastName:
-                      type: string
-                      example: Doe
-                      description: This field is the last name of the user
-        204:
-          description: No Content - No policy was found
+                  $ref: '#/Models/UserStoreModel'
+        500:
+          $ref: '#/Models/InternalServerError'
   /api/v1/users/{id}:
     get:
       security:
@@ -151,23 +261,7 @@ paths:
           content:
             "application/json":
               schema:
-                type: object
-                properties:
-                  Id:
-                    type: string
-                    example: 0127f5eb-da80-4a8b-9fea-6b8c33536745
-                    description: This field is a unique identifier for the user
-                  Username:
-                    type: string
-                    description: The username the user logs in with
-                  FirstName:
-                    type: string
-                    example: John
-                    description: This field is the first name of the user
-                  LastName:
-                    type: string
-                    example: Doe
-                    description: This field is the last name of the user
+                $ref: '#/Models/UserStoreModel'
         204:
           description: No Content - No policy was found
     put:
@@ -234,3 +328,100 @@ paths:
             "application/json":
               schema:
                 type: object
+
+
+Models:
+  Unauthorized:
+    description: Unauthorized - The user was not found, or the provided authentication infomation was invalid
+    content:
+      "application/json":
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "Username or password is not valid"
+              description: A description of why the request was unauthorized     
+  UnsupportedMediaType:
+    description: Unsupported Media Type - The request body was not valid JSON.
+    content:
+      "application/problem+json":
+        schema:
+          type: object
+          properties:
+            type: 
+              type: string
+              description: RFC error type
+              example: https://tools.ietf.org/html/rfc7231#section-6.5.13
+            title: 
+              type: string
+              description: Status code name
+              example: Unsupported Media Type
+            status: 
+              type: number
+              description: Status code
+              example: 415
+            traceId:
+              type: string
+              example: "|5cee1704-462e2ef49163481a."
+  InternalServerError:
+    description: InternalServerError - The request caused unexpected behaviour in the API causing the request to fail
+  BadRequest:
+    description: BadRequest - The request body did not contain valid data
+    content:
+      "application/json":
+        schema:
+          type: object
+          properties:
+            type: 
+              type: string
+              description: RFC error type
+              example: https://tools.ietf.org/html/rfc7231#section-6.5.13
+            title: 
+              type: string
+              description: Status code name
+              example: Bad Request
+            status: 
+              type: number
+              description: Status code
+              example: 400
+            traceId:
+              type: string
+              example: "|5cee1704-462e2ef49163481a."
+            errors:
+              type: object
+              description: A list of fields in the request that were not valid
+              properties:
+                fieldexample:
+                  type: array
+                  items:
+                    type: string
+                    example: fieldexample is required.
+                    description: Reason the field was not valid
+  UserStoreModel:
+    type: object
+    properties:
+      Id:
+        type: string
+        example: 0127f5eb-da80-4a8b-9fea-6b8c33536745
+        description: This field is a unique identifier for the user
+      FirstName:
+        type: string
+        example: John
+        description: This field is the first name of the user
+      LastName:
+        type: string
+        example: Doe
+        description: This field is the last name of the user
+      Username:
+        type: string
+        description: The username the user logs in with
+      Email:
+        type: string
+        description: The email of the user 
+      Status:
+        type: number
+        description: The status of the user.
+        enum:
+          - 0
+          - 1

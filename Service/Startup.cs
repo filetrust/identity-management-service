@@ -37,20 +37,17 @@ namespace Glasswall.IdentityManagementService.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (!Directory.Exists("/mnt/users"))
-            {
-                throw new ApplicationException("A volume must be mounted to '/mnt/users'");
-            }
-
             var configuration = ValidateAndBind(Configuration);
 
             services.TryAddSingleton(configuration);
+            services.TryAddSingleton<IFileStoreOptions, UserStoreOptions>();
+            services.TryAddScoped<ModelStateValidationActionFilterAttribute>();
+            services.TryAddTransient<IFileStore, FileStore>();
             services.TryAddTransient<IUserService, UserService>();
             services.TryAddTransient<ITokenService, JwtTokenService>();
-            services.TryAddTransient<IFileStore>(sp => new MountedFileStore(sp.GetRequiredService<ILogger<MountedFileStore>>(), "/mnt/users"));
-            services.AddScoped<ModelStateValidationActionFilterAttribute>();
-            services.AddTransient<IEmailService, EmailService>();
-
+            services.TryAddTransient<IEmailService, EmailService>();
+            services.TryAddTransient<IEncryptionHandler, AesEncryptionHandler>();
+            
             services.AddLogging(logging =>
             {
                 logging.AddDebug();
@@ -69,7 +66,7 @@ namespace Glasswall.IdentityManagementService.Api
                     OnTokenValidated = context =>
                     {
                         var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var userId = Guid.Parse(context.Principal.Identity.Name);
+                        var userId = Guid.Parse(context.Principal.Identity.Name ?? string.Empty);
                         var user = userService.GetByIdAsync(userId, CancellationToken.None).GetAwaiter().GetResult();
                         if (user == null)
                         {
@@ -133,19 +130,31 @@ namespace Glasswall.IdentityManagementService.Api
         {
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.TokenLifetime));
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.TokenSecret));
+            ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.EncryptionSecret));
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint));
 
             var businessConfig = new IdentityManagementServiceConfiguration();
 
             configuration.Bind(businessConfig);
 
+            businessConfig.UserStoreRootPath ??= "/mnt/users";
+
+            if (!Directory.Exists(businessConfig.UserStoreRootPath))
+                throw new ApplicationException($"A volume must be mounted to '{businessConfig.UserStoreRootPath}'");
+
             return businessConfig;
         }
 
         private static void ThrowIfNullOrWhitespace(IConfiguration configuration, string key)
         {
-            if (string.IsNullOrWhiteSpace(configuration[key]))
+            if (KeyIsNullOrWhiteSpace(configuration, key))
                 throw new ConfigurationErrorsException($"{key} was not provided");
+        }
+
+        private static bool KeyIsNullOrWhiteSpace(IConfiguration configuration, string key)
+        {
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            return string.IsNullOrWhiteSpace(configuration[key]);
         }
     }
 }

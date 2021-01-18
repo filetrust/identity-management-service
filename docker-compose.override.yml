@@ -11,6 +11,7 @@ services:
       - SmtpPort=
       - SmtpUser=
       - SmtpPass=
+      - EncryptionSecret=
       - ManagementUIEndpoint=
     ports:
       - "6004:80"

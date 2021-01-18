@@ -26,30 +26,32 @@ namespace Glasswall.IdentityManagementService.Business.Services
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public async Task SendAsync(EmailModel emailModel, CancellationToken cancellationToken)
+        public Task SendAsync(EmailModel emailModel, CancellationToken cancellationToken)
         {
-            if (emailModel == null)
-                throw new ArgumentNullException(nameof(emailModel));
+            if (emailModel == null) throw new ArgumentNullException(nameof(emailModel));
 
             _logger.LogInformation($"Sending message from '{emailModel.EmailFrom}' to '{string.Join(";", emailModel.EmailTo)}'");
-
-
+            
             var mimeMessage = new MimeMessage();
             mimeMessage.From.Add(MailboxAddress.Parse(emailModel.EmailFrom ?? _configuration["EmailFrom"]));
             mimeMessage.To.Add(MailboxAddress.Parse(emailModel.EmailTo.FirstOrDefault()));
             mimeMessage.Subject = emailModel.Subject;
             mimeMessage.Body = new TextPart(TextFormat.Html) { Text = emailModel.Body };
 
-            using (var client = new SmtpClient())
-            {
-                await client.ConnectAsync(_configuration["SmtpHost"], int.Parse(_configuration["SmtpPort"]), SecureSocketOptions.StartTls, cancellationToken);
+            return InternalSendAsync(mimeMessage, cancellationToken);
+        }
 
-                await client.AuthenticateAsync(_configuration["SmtpUser"], _configuration["SmtpPass"], cancellationToken);
+        private async Task InternalSendAsync(MimeMessage mimeMessage, CancellationToken cancellationToken)
+        {
+            using var client = new SmtpClient();
 
-                await client.SendAsync(FormatOptions.Default, mimeMessage, cancellationToken);
+            await client.ConnectAsync(_configuration["SmtpHost"], int.Parse(_configuration["SmtpPort"]), SecureSocketOptions.StartTls, cancellationToken);
 
-                await client.DisconnectAsync(true, cancellationToken);
-            }
+            await client.AuthenticateAsync(_configuration["SmtpUser"], _configuration["SmtpPass"], cancellationToken);
+
+            await client.SendAsync(FormatOptions.Default, mimeMessage, cancellationToken);
+
+            await client.DisconnectAsync(true, cancellationToken);
         }
     }
 }

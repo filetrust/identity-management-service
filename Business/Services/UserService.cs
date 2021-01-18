@@ -126,7 +126,8 @@ namespace Glasswall.IdentityManagementService.Business.Services
         {            
             if (!await _fileStore.ExistsAsync(path, ct)) return null;
             await using var file = await _fileStore.ReadAsync(path, ct);
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<User>(Encoding.UTF8.GetString(file.ToArray()));
+            var fileString = Encoding.UTF8.GetString(file.ToArray());
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<User>(fileString);
         }
 
         private async Task InternalUploadAsync(User user, CancellationToken ct)

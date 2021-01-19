@@ -1,0 +1,32 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=81e7a845_002Df6b5_002D4807_002D918a_002Dad309e3f5c75/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="WhenUsingStartup" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.StartupTests.WhenUsingStartup&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ConstructorTests.Correct_Attributes_Applied_To_Class&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ConstructorTests.Correct_Attributes_Applied_To_Authenticate&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ConstructorTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.Authenticate.AuthenticatingNonExistentUser&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.Authenticate.AuthenticatingExistingUser.Ok_Is_Returned&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.Authenticate.AuthenticatingExistingUser&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.New.AddingNewUser.User_Service_Is_Leveraged_Correctly&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.New.AddingNewUser.Email_Service_Is_Leveraged_Correctly&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.New.AddingNewUser&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ForgotPassword.WhenUsernameMatches&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ForgotPassword.WhenUsernameDoesNotMatch&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ValidateResetToken.WithValidUserIdAndSignature&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ValidateResetToken.WithValidUserButInvalidSignature&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ValidateResetToken.WithInvalidUserAndInvalidSignature&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ValidateResetToken.WhenIdentifierIsInvalid.BadRequestObjectResult_Is_Returned&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ValidateResetToken.WhenIdentifierIsInvalid&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ResetPassword.WhenIdentifierIsInvalid&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ResetPassword.WithInvalidUserAndInvalidSignature&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ResetPassword.WithValidUserButInvalidSignature&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.ResetPassword.WithValidUserIdAndSignature&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.GetAll.GettingAllUsers.Ok_Is_Returned&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.GetAll.GettingAllUsers&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.GetById.WhenUserExists&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.GetById.WhenUserDoesNotExist&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.Update.WhenUpdatingUser&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::752C1EAD-D86E-4C44-B129-113F62FD87FC::.NETCoreApp,Version=v3.1::Service.Tests.Controllers.UsersControllerTests.Delete.WhenUserExists&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

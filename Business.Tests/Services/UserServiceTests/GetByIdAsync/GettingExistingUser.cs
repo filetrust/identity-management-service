@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Business.Store;
 using Glasswall.IdentityManagementService.Common.Models.Store;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Services.UserServiceTests.GetByIdAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.GetByIdAsync
 {
     [TestFixture]
     public class GettingExistingUser : UserMetadataSearchStrategyTestBase
@@ -39,7 +38,8 @@ namespace Business.Tests.Services.UserServiceTests.GetByIdAsync
                 .ReturnsAsync(true);
 
             FileStore.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ValidUser))));
+                .ReturnsAsync(_memoryStream =
+                    new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
 
             _output = await ClassInTest.GetByIdAsync(ValidUser.Id, TestCancellationToken);
         }
@@ -68,7 +68,7 @@ namespace Business.Tests.Services.UserServiceTests.GetByIdAsync
 
         private static (byte[], byte[]) SaltAndHashPassword(string password)
         {
-            using var hmac = new System.Security.Cryptography.HMACSHA512();
+            using var hmac = new HMACSHA512();
             return (hmac.Key, hmac.ComputeHash(Encoding.UTF8.GetBytes(password)));
         }
     }

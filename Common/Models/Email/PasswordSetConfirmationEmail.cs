@@ -16,9 +16,11 @@ namespace Glasswall.IdentityManagementService.Common.Models.Email
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        public override string Body => $"You have successfully set your password. Please log into your account <a href=\"{_config.ManagementUIEndpoint}\">here</a>.";
+        public override string Body =>
+            $"You have successfully set your password. Please log into your account <a href=\"{_config.ManagementUIEndpoint}\">here</a>.";
+
         public override string Subject => "Your Password has been changed.";
         public override string EmailFrom => "admin@glasswallsolutions.com";
-        public override IEnumerable<string> EmailTo => new[] { _createdUser.Email };
+        public override IEnumerable<string> EmailTo => new[] {_createdUser.Email};
     }
 }

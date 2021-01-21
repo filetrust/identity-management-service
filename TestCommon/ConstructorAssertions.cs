@@ -28,10 +28,7 @@ namespace TestCommon
         {
             var constructors = typeof(TClassInTest).GetConstructors();
 
-            foreach (var constructor in constructors)
-            {
-                ConstructorIsGuardedAgainstNull(constructor);
-            }
+            foreach (var constructor in constructors) ConstructorIsGuardedAgainstNull(constructor);
         }
 
         private static void ConstructorIsGuardedAgainstNull(ConstructorInfo constructorInfo)
@@ -48,7 +45,7 @@ namespace TestCommon
 
                 Assert.IsInstanceOf<ArgumentNullException>(ex.InnerException);
 
-                var argumentNullException = (ArgumentNullException)ex.InnerException;
+                var argumentNullException = (ArgumentNullException) ex.InnerException;
 
                 Assert.AreEqual(parameters.ElementAt(i).Name, argumentNullException?.ParamName);
             }

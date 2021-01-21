@@ -30,8 +30,12 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = classInfo.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(4).Items);
-            Assert.That(attributes, Has.One.TypeOf<RouteAttribute>().With.Property(nameof(RouteAttribute.Template)).EqualTo("api/v1/[controller]"));
-            Assert.That(attributes, Has.One.TypeOf<ServiceFilterAttribute>().With.Property(nameof(ServiceFilterAttribute.ServiceType)).EqualTo(typeof(ModelStateValidationActionFilterAttribute)));
+            Assert.That(attributes,
+                Has.One.TypeOf<RouteAttribute>().With.Property(nameof(RouteAttribute.Template))
+                    .EqualTo("api/v1/[controller]"));
+            Assert.That(attributes,
+                Has.One.TypeOf<ServiceFilterAttribute>().With.Property(nameof(ServiceFilterAttribute.ServiceType))
+                    .EqualTo(typeof(ModelStateValidationActionFilterAttribute)));
             Assert.That(attributes, Has.One.TypeOf<ApiControllerAttribute>());
             Assert.That(attributes, Has.One.TypeOf<AuthorizeAttribute>());
         }
@@ -45,7 +49,9 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = methodInfo?.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(4).Items);
-            Assert.That(attributes, Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template)).EqualTo("authenticate"));
+            Assert.That(attributes,
+                Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template))
+                    .EqualTo("authenticate"));
             Assert.That(attributes, Has.One.TypeOf<AllowAnonymousAttribute>());
         }
 
@@ -58,7 +64,8 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = methodInfo?.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(4).Items);
-            Assert.That(attributes, Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template)).EqualTo("new"));
+            Assert.That(attributes,
+                Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template)).EqualTo("new"));
             Assert.That(attributes, Has.One.TypeOf<AllowAnonymousAttribute>());
         }
 
@@ -71,7 +78,9 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = methodInfo?.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(4).Items);
-            Assert.That(attributes, Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template)).EqualTo("forgot-password"));
+            Assert.That(attributes,
+                Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template))
+                    .EqualTo("forgot-password"));
             Assert.That(attributes, Has.One.TypeOf<AllowAnonymousAttribute>());
         }
 
@@ -84,7 +93,9 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = methodInfo?.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(4).Items);
-            Assert.That(attributes, Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template)).EqualTo("validate-reset-token"));
+            Assert.That(attributes,
+                Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template))
+                    .EqualTo("validate-reset-token"));
             Assert.That(attributes, Has.One.TypeOf<AllowAnonymousAttribute>());
         }
 
@@ -97,7 +108,9 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = methodInfo?.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(4).Items);
-            Assert.That(attributes, Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template)).EqualTo("reset-password"));
+            Assert.That(attributes,
+                Has.One.TypeOf<HttpPostAttribute>().With.Property(nameof(HttpPostAttribute.Template))
+                    .EqualTo("reset-password"));
             Assert.That(attributes, Has.One.TypeOf<AllowAnonymousAttribute>());
         }
 
@@ -110,7 +123,8 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = methodInfo?.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(3).Items);
-            Assert.That(attributes, Has.One.TypeOf<HttpGetAttribute>().With.Property(nameof(HttpGetAttribute.Template)));
+            Assert.That(attributes,
+                Has.One.TypeOf<HttpGetAttribute>().With.Property(nameof(HttpGetAttribute.Template)));
         }
 
         [Test]
@@ -122,9 +136,10 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = methodInfo?.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(3).Items);
-            Assert.That(attributes, Has.One.TypeOf<HttpGetAttribute>().With.Property(nameof(HttpGetAttribute.Template)).EqualTo("{id}"));
+            Assert.That(attributes,
+                Has.One.TypeOf<HttpGetAttribute>().With.Property(nameof(HttpGetAttribute.Template)).EqualTo("{id}"));
         }
-        
+
         [Test]
         public void Correct_Attributes_Applied_To_Update()
         {
@@ -134,7 +149,8 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = methodInfo?.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(3).Items);
-            Assert.That(attributes, Has.One.TypeOf<HttpPutAttribute>().With.Property(nameof(HttpPutAttribute.Template)).EqualTo("{id}"));
+            Assert.That(attributes,
+                Has.One.TypeOf<HttpPutAttribute>().With.Property(nameof(HttpPutAttribute.Template)).EqualTo("{id}"));
         }
 
         [Test]
@@ -146,7 +162,8 @@ namespace Service.Tests.Controllers.UsersControllerTests
             var attributes = methodInfo?.GetCustomAttributes(false);
 
             Assert.That(attributes, Has.Exactly(3).Items);
-            Assert.That(attributes, Has.One.TypeOf<HttpPutAttribute>().With.Property(nameof(HttpPutAttribute.Template)).EqualTo("{id}"));
+            Assert.That(attributes,
+                Has.One.TypeOf<HttpPutAttribute>().With.Property(nameof(HttpPutAttribute.Template)).EqualTo("{id}"));
         }
     }
 }

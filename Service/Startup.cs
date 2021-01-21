@@ -1,3 +1,10 @@
+using System;
+using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Api.ActionFilters;
 using Glasswall.IdentityManagementService.Business.Services;
 using Glasswall.IdentityManagementService.Business.Store;
@@ -14,13 +21,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Configuration;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Glasswall.IdentityManagementService.Api
 {
@@ -47,45 +47,41 @@ namespace Glasswall.IdentityManagementService.Api
             services.TryAddTransient<ITokenService, JwtTokenService>();
             services.TryAddTransient<IEmailService, EmailService>();
             services.TryAddTransient<IEncryptionHandler, AesEncryptionHandler>();
-            
-            services.AddLogging(logging =>
-            {
-                logging.AddDebug();
-            })
+
+            services.AddLogging(logging => { logging.AddDebug(); })
                 .Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Debug);
 
             services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = context =>
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.Events = new JwtBearerEvents
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var userId = Guid.Parse(context.Principal.Identity.Name ?? string.Empty);
-                        var user = userService.GetByIdAsync(userId, CancellationToken.None).GetAwaiter().GetResult();
-                        if (user == null)
+                        OnTokenValidated = context =>
                         {
-                            // return unauthorized if user no longer exists
-                            context.Fail("Unauthorized");
+                            var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                            var userId = Guid.Parse(context.Principal.Identity.Name ?? string.Empty);
+                            var user = userService.GetByIdAsync(userId, CancellationToken.None).GetAwaiter()
+                                .GetResult();
+                            if (user == null)
+                                // return unauthorized if user no longer exists
+                                context.Fail("Unauthorized");
+                            return Task.CompletedTask;
                         }
-                        return Task.CompletedTask;
-                    }
-                };
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.TokenSecret)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+                    };
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.TokenSecret)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
 
             services.AddControllers();
             services.AddCors();
@@ -98,7 +94,7 @@ namespace Glasswall.IdentityManagementService.Api
                 app.UseDeveloperExceptionPage();
 
             app.UseRouting();
-            
+
             app.Use((context, next) =>
             {
                 context.Response.Headers["Access-Control-Allow-Methods"] = "*";
@@ -119,10 +115,7 @@ namespace Glasswall.IdentityManagementService.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
 
@@ -131,7 +124,8 @@ namespace Glasswall.IdentityManagementService.Api
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.TokenLifetime));
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.TokenSecret));
             ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.EncryptionSecret));
-            ThrowIfNullOrWhitespace(configuration, nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint));
+            ThrowIfNullOrWhitespace(configuration,
+                nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint));
 
             var businessConfig = new IdentityManagementServiceConfiguration();
 
@@ -140,7 +134,8 @@ namespace Glasswall.IdentityManagementService.Api
             businessConfig.UserStoreRootPath ??= "/mnt/users";
 
             if (!Directory.Exists(businessConfig.UserStoreRootPath))
-                throw new ConfigurationErrorsException($"A volume must be mounted to '{businessConfig.UserStoreRootPath}'");
+                throw new ConfigurationErrorsException(
+                    $"A volume must be mounted to '{businessConfig.UserStoreRootPath}'");
 
             return businessConfig;
         }

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Api.Controllers;
 using Glasswall.IdentityManagementService.Common.Models.Email;
-using Glasswall.IdentityManagementService.Common.Models.Store;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -31,20 +30,21 @@ namespace Service.Tests.Controllers.UsersControllerTests.ForgotPassword
 
             UserService.Setup(s =>
                     s.GetAllAsync(It.IsAny<CancellationToken>()))
-                .Returns(new [] { ValidUser }.AsAsyncEnumerable());
+                .Returns(new[] {ValidUser}.AsAsyncEnumerable());
 
             TokenService.Setup(s => s.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TimeSpan>()))
                 .Returns(_validToken = "Some token");
 
             _output = await ClassInTest.ForgotPassword(_input, TestCancellationToken);
         }
-        
+
         [Test]
         public void Ok_Is_Returned()
         {
             Assert.That(_output, Is.InstanceOf<OkObjectResult>()
                 .With.Property(nameof(OkObjectResult.Value))
-                .WithPropEqual("message", "Password reset successful, please check your email for verification instructions"));
+                .WithPropEqual("message",
+                    "Password reset successful, please check your email for verification instructions"));
         }
 
         [Test]

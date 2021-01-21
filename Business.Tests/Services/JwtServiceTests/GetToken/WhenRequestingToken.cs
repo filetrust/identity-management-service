@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Business.Tests.Services.JwtServiceTests.GetToken
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.JwtServiceTests.GetToken
 {
     [TestFixture]
     public class WhenRequestingToken : JwtServiceTestBase
@@ -13,7 +13,8 @@ namespace Business.Tests.Services.JwtServiceTests.GetToken
         {
             CommonSetup();
 
-            _output = ClassInTest.GetToken(Guid.NewGuid().ToString(), "MyVeryLongSecretThatIsVeryGoodBecauseItIsVeryLong", TimeSpan.FromDays(1));
+            _output = ClassInTest.GetToken(Guid.NewGuid().ToString(),
+                "MyVeryLongSecretThatIsVeryGoodBecauseItIsVeryLong", TimeSpan.FromDays(1));
         }
 
         [Test]

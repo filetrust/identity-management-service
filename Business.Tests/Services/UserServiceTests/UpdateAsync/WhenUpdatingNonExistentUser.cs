@@ -6,10 +6,11 @@ using Glasswall.IdentityManagementService.Business.Services.Exceptions;
 using Glasswall.IdentityManagementService.Business.Store;
 using Glasswall.IdentityManagementService.Common.Models.Store;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Services.UserServiceTests.UpdateAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.UpdateAsync
 {
     [TestFixture]
     public class WhenUpdatingNonExistentUser : UserMetadataSearchStrategyTestBase
@@ -21,19 +22,21 @@ namespace Business.Tests.Services.UserServiceTests.UpdateAsync
 
             FileStore.Setup(s => s.SearchAsync(It.IsAny<string>(), It.IsAny<UserMetadataSearchStrategy>(),
                     It.IsAny<CancellationToken>()))
-                .Returns(new[] { $"{ValidUser.Id}.json" }.AsAsyncEnumerable());
+                .Returns(new[] {$"{ValidUser.Id}.json"}.AsAsyncEnumerable());
 
             FileStore.Setup(s => s.ExistsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
             FileStore.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new MemoryStream(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ValidUser))));
+                .ReturnsAsync(new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
         }
 
         [Test]
         public void Exception_Is_raised()
         {
-            Assert.That(async() => await ClassInTest.UpdateAsync(new User { Id = Guid.NewGuid(), Username = ValidUser.Username }, TestCancellationToken), Throws.InstanceOf<UserNotFoundException>());
+            Assert.That(
+                async () => await ClassInTest.UpdateAsync(new User {Id = Guid.NewGuid(), Username = ValidUser.Username},
+                    TestCancellationToken), Throws.InstanceOf<UserNotFoundException>());
         }
     }
 }

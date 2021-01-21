@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework.Constraints;
+﻿using NUnit.Framework.Constraints;
 
 namespace TestCommon
 {

@@ -13,14 +13,16 @@ namespace Glasswall.IdentityManagementService.Common.Models.Email
 
         public ForgotPasswordEmail(User createdUser, IIdentityManagementServiceConfiguration config, string resetToken)
         {
-            _createdUser = createdUser ?? throw new System.ArgumentNullException(nameof(createdUser));
-            _config = config ?? throw new System.ArgumentNullException(nameof(config));
+            _createdUser = createdUser ?? throw new ArgumentNullException(nameof(createdUser));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             _resetToken = resetToken ?? throw new ArgumentNullException(nameof(resetToken));
         }
 
-        public override string Body => $"Please reset your password at '{_config.ManagementUIEndpoint}/reset?Token={_resetToken}";
+        public override string Body =>
+            $"Please reset your password at '{_config.ManagementUIEndpoint}/reset?Token={_resetToken}";
+
         public override string Subject => "Password reset notification";
         public override string EmailFrom => "admin@glasswallsolutions.com";
-        public override IEnumerable<string> EmailTo => new[] { _createdUser.Email };
+        public override IEnumerable<string> EmailTo => new[] {_createdUser.Email};
     }
 }

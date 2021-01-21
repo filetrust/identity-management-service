@@ -38,7 +38,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.ValidateResetToken
 
             _output = await ClassInTest.ValidateResetToken(_input, TestCancellationToken);
         }
-        
+
         [Test]
         public void Ok_Is_Returned()
         {
@@ -52,7 +52,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.ValidateResetToken
         {
             UserService.Verify(
                 x => x.GetByIdAsync(
-                    It.Is<Guid>(f => f == ValidUser.Id), 
+                    It.Is<Guid>(f => f == ValidUser.Id),
                     It.Is<CancellationToken>(f => f == TestCancellationToken)),
                 Times.Once);
             UserService.VerifyNoOtherCalls();

@@ -17,12 +17,13 @@ namespace Glasswall.IdentityManagementService.Business.Services
             var key = Encoding.ASCII.GetBytes(tokenSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new []
+                Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Name, identifier)
                 }),
                 Expires = DateTime.UtcNow.Add(lifetime),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
@@ -53,9 +54,9 @@ namespace Glasswall.IdentityManagementService.Business.Services
         private static string Base64UrlEncode(byte[] input)
         {
             var output = Convert.ToBase64String(input);
-            output = output.Split('=')[0]; 
-            output = output.Replace('+', '-'); 
-            output = output.Replace('/', '_'); 
+            output = output.Split('=')[0];
+            output = output.Replace('+', '-');
+            output = output.Replace('/', '_');
             return output;
         }
     }

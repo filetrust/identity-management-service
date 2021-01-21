@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Business.Store;
 using Glasswall.IdentityManagementService.Common.Store;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Services.UserServiceTests.UpdateAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.UpdateAsync
 {
     [TestFixture]
     public class WhenUpdatingUser : UserMetadataSearchStrategyTestBase
@@ -23,13 +24,14 @@ namespace Business.Tests.Services.UserServiceTests.UpdateAsync
 
             FileStore.Setup(s => s.SearchAsync(It.IsAny<string>(), It.IsAny<UserMetadataSearchStrategy>(),
                     It.IsAny<CancellationToken>()))
-                .Returns(new[] { _filePath = $"{ValidUser.Id}.json" }.AsAsyncEnumerable());
+                .Returns(new[] {_filePath = $"{ValidUser.Id}.json"}.AsAsyncEnumerable());
 
             FileStore.Setup(s => s.ExistsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
             FileStore.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ValidUser))));
+                .ReturnsAsync(_memoryStream =
+                    new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
 
             await ClassInTest.UpdateAsync(ValidUser, TestCancellationToken);
         }

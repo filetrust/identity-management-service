@@ -47,7 +47,6 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
 
             var token = _tokenService.GetToken(user.Id.ToString(), _identityManagementServiceConfiguration.TokenSecret, _identityManagementServiceConfiguration.TokenLifetime);
 
-            // return basic user info and authentication token
             return Ok(new
             {
                 user.Id,

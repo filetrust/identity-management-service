@@ -7,10 +7,10 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - TokenSecret=IamAVeryLongAndDodgeySecret
       - TokenLifetime=00:01:00
-      - SmtpHost=smtp.gmail.com
-      - SmtpPort=587
-      - SmtpUser=chiisaimurasaki@gmail.com
-      - SmtpPass=grbppfnxxkkyrhwb
+      - SmtpHost=
+      - SmtpPort=
+      - SmtpUser=
+      - SmtpPass=
       - EncryptionSecret=IamAVeryLongAndDodgeySecrets2312
       - ManagementUIEndpoint=IamAVeryLongAndDodgeySecret
     ports:

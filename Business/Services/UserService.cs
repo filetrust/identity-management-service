@@ -25,9 +25,6 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
         public Task<User> AuthenticateAsync(string username, string password, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-                return null;
-
             return InternalAuthenticateAsync(username, password, cancellationToken);
         }
 
@@ -48,17 +45,17 @@ namespace Glasswall.IdentityManagementService.Business.Services
         
         public Task<User> CreateAsync(User user, CancellationToken cancellationToken)
         {
-            if (user.Username == null) throw new ArgumentNullException(nameof(user.Username));
+            if (user == null) throw new ArgumentNullException(nameof(user));
             if (string.IsNullOrWhiteSpace(user.Username)) throw new ArgumentException("Value is required", nameof(user.Username));
             
             return InternalCreateAsync(user, cancellationToken);
         }
 
-        public Task UpdateAsync(User userParam, CancellationToken cancellationToken)
+        public Task UpdateAsync(User user, CancellationToken cancellationToken)
         {
-            if (userParam == null) throw new ArgumentNullException(nameof(userParam));
+            if (user == null) throw new ArgumentNullException(nameof(user));
 
-            return InternalUpdateAsync(userParam, cancellationToken);
+            return InternalUpdateAsync(user, cancellationToken);
         }
         
         public Task DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -101,22 +98,18 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
             if (user == null) throw new UserNotFoundException(userParam.Id);
 
-            if (!string.IsNullOrWhiteSpace(userParam.Username) && userParam.Username != user.Username)
+            await foreach (var otherUser in GetAllAsync(cancellationToken))
             {
-                await foreach (var otherUser in GetAllAsync(cancellationToken))
-                {
-                    if (otherUser.Id != userParam.Id && otherUser.Username == userParam.Username)
-                        throw new UsernameAlreadyTakenException(otherUser.Id, userParam.Username);
-                }
-
-                user.Username = userParam.Username;
+                if (otherUser.Id != userParam.Id && otherUser.Username == userParam.Username)
+                    throw new UsernameAlreadyTakenException(otherUser.Id, userParam.Username);
             }
+
+            user.Username = userParam.Username;
 
             if (!string.IsNullOrWhiteSpace(userParam.FirstName)) user.FirstName = userParam.FirstName;
             if (!string.IsNullOrWhiteSpace(userParam.LastName)) user.LastName = userParam.LastName;
             if (!string.IsNullOrWhiteSpace(userParam.Email)) user.LastName = userParam.Email;
 
-            user.Status = userParam.Status;
             user.Status = userParam.Status;
 
             await InternalUploadAsync(user, cancellationToken);
@@ -138,9 +131,6 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
         private async Task<User> InternalAuthenticateAsync(string username, string password, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(username)) throw new ArgumentException("Value cannot be empty or whitespace only string.", nameof(username));
-            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", nameof(password));
-
             await foreach (var user in GetAllAsync(cancellationToken))
             {
                 if (username == user.Username && PasswordMatches(password, user.PasswordHash, user.PasswordSalt))
@@ -152,28 +142,17 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
         private static (byte[], byte[]) SaltAndHashPassword(string password)
         {
-            if (password == null) throw new ArgumentNullException(nameof(password));
-            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
-
             using var hmac = new System.Security.Cryptography.HMACSHA512();
             return (hmac.Key, hmac.ComputeHash(Encoding.UTF8.GetBytes(password)));
         }
 
         private static bool PasswordMatches(string password, IReadOnlyList<byte> storedHash, byte[] storedSalt)
         {
-            if (storedHash.Count != 64) throw new InvalidOperationException("Invalid length of password hash (64 bytes expected).");
-            if (storedSalt.Length != 128) throw new InvalidOperationException("Invalid length of password salt (128 bytes expected).");
-
             using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
             {
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                if (computedHash.Where((t, i) => t != storedHash[i]).Any())
-                {
-                    return false;
-                }
+                return !(computedHash.Where((t, i) => t != storedHash[i]).Any());
             }
-
-            return true;
         }
 
         private static readonly Random Random = new Random();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using MimeKit.Text;
 
 namespace Glasswall.IdentityManagementService.Business.Services
 {
+    [ExcludeFromCodeCoverage] // This will need some work around
     public class EmailService : IEmailService
     {
         private readonly ILogger<EmailService> _logger;

@@ -17,7 +17,7 @@ namespace Glasswall.IdentityManagementService.Business.Services
             var key = Encoding.ASCII.GetBytes(tokenSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
+                Subject = new ClaimsIdentity(new []
                 {
                     new Claim(ClaimTypes.Name, identifier)
                 }),

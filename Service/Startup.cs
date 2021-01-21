@@ -140,7 +140,7 @@ namespace Glasswall.IdentityManagementService.Api
             businessConfig.UserStoreRootPath ??= "/mnt/users";
 
             if (!Directory.Exists(businessConfig.UserStoreRootPath))
-                throw new ApplicationException($"A volume must be mounted to '{businessConfig.UserStoreRootPath}'");
+                throw new ConfigurationErrorsException($"A volume must be mounted to '{businessConfig.UserStoreRootPath}'");
 
             return businessConfig;
         }

@@ -1,7 +1,7 @@
 ﻿using Glasswall.IdentityManagementService.Business.Services;
 using TestCommon;
 
-namespace Business.Tests.Services.JwtServiceTests
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.JwtServiceTests
 {
     public abstract class JwtServiceTestBase : UnitTestBase<JwtTokenService>
     {

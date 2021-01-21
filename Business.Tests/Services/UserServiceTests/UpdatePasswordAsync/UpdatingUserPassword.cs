@@ -4,9 +4,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace Business.Tests.Services.UserServiceTests.UpdatePasswordAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.UpdatePasswordAsync
 {
     [TestFixture]
     public class UpdatingUserPassword : UserMetadataSearchStrategyTestBase
@@ -26,7 +27,7 @@ namespace Business.Tests.Services.UserServiceTests.UpdatePasswordAsync
         {
             FileStore.Verify(s => s.WriteAsync(
                     It.Is<string>(f => f == $"{ValidUser.Id}.json"),
-                    It.Is<byte[]>(f => BytesEqual(f, Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ValidUser)))),
+                    It.Is<byte[]>(f => BytesEqual(f, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser)))),
                     It.Is<CancellationToken>(f => f == TestCancellationToken)),
                 Times.Once);
             FileStore.VerifyNoOtherCalls();

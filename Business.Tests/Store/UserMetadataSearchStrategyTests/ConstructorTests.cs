@@ -1,9 +1,8 @@
-﻿using Glasswall.IdentityManagementService.Business.Services;
-using Glasswall.IdentityManagementService.Business.Store;
+﻿using Glasswall.IdentityManagementService.Business.Store;
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Store.UserMetadataSearchStrategyTests
+namespace Glasswall.IdentityManagementService.Business.Tests.Store.UserMetadataSearchStrategyTests
 {
     [TestFixture]
     public class ConstructorTests : UserMetadataSearchStrategyTestBase

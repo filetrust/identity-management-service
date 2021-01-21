@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Common.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -31,7 +29,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.ValidateResetToken
 
             _output = await ClassInTest.ValidateResetToken(_input, TestCancellationToken);
         }
-        
+
         [Test]
         public void BadRequestObjectResult_Is_Returned()
         {

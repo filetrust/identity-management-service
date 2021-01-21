@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Business.Tests.Services.UserServiceTests.GetByIdAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.GetByIdAsync
 {
     [TestFixture]
     public class WhenUserIdIsEmpty : UserMetadataSearchStrategyTestBase
@@ -15,7 +15,8 @@ namespace Business.Tests.Services.UserServiceTests.GetByIdAsync
         [Test]
         public void Exception_Is_Thrown()
         {
-            Assert.That(() => ClassInTest.GetByIdAsync(Guid.Empty, TestCancellationToken), ThrowsArgumentException("id", "Value must not be empty"));
+            Assert.That(() => ClassInTest.GetByIdAsync(Guid.Empty, TestCancellationToken),
+                ThrowsArgumentException("id", "Value must not be empty"));
         }
     }
 }

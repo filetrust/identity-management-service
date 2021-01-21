@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Threading;
 using Glasswall.IdentityManagementService.Business.Services;
-using Glasswall.IdentityManagementService.Business.Store;
-using Glasswall.IdentityManagementService.Common.Configuration;
 using Glasswall.IdentityManagementService.Common.Models.Store;
-using Glasswall.IdentityManagementService.Common.Services;
 using Glasswall.IdentityManagementService.Common.Store;
 using Moq;
 using TestCommon;
 
-namespace Business.Tests.Services.UserServiceTests
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests
 {
     public abstract class UserMetadataSearchStrategyTestBase : UnitTestBase<UserService>
     {

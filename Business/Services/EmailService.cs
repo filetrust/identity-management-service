@@ -32,13 +32,14 @@ namespace Glasswall.IdentityManagementService.Business.Services
         {
             if (emailModel == null) throw new ArgumentNullException(nameof(emailModel));
 
-            _logger.LogInformation($"Sending message from '{emailModel.EmailFrom}' to '{string.Join(";", emailModel.EmailTo)}'");
-            
+            _logger.LogInformation(
+                $"Sending message from '{emailModel.EmailFrom}' to '{string.Join(";", emailModel.EmailTo)}'");
+
             var mimeMessage = new MimeMessage();
             mimeMessage.From.Add(MailboxAddress.Parse(emailModel.EmailFrom ?? _configuration["EmailFrom"]));
             mimeMessage.To.Add(MailboxAddress.Parse(emailModel.EmailTo.FirstOrDefault()));
             mimeMessage.Subject = emailModel.Subject;
-            mimeMessage.Body = new TextPart(TextFormat.Html) { Text = emailModel.Body };
+            mimeMessage.Body = new TextPart(TextFormat.Html) {Text = emailModel.Body};
 
             return InternalSendAsync(mimeMessage, cancellationToken);
         }
@@ -47,7 +48,8 @@ namespace Glasswall.IdentityManagementService.Business.Services
         {
             using var client = new SmtpClient();
 
-            await client.ConnectAsync(_configuration["SmtpHost"], int.Parse(_configuration["SmtpPort"]), SecureSocketOptions.StartTls, cancellationToken);
+            await client.ConnectAsync(_configuration["SmtpHost"], int.Parse(_configuration["SmtpPort"]),
+                SecureSocketOptions.StartTls, cancellationToken);
 
             await client.AuthenticateAsync(_configuration["SmtpUser"], _configuration["SmtpPass"], cancellationToken);
 

@@ -9,7 +9,8 @@ namespace Glasswall.IdentityManagementService.Business.Store
 {
     public class AesEncryptionHandler : IEncryptionHandler
     {
-        public async Task<IEnumerable<byte>> EncryptAsync(byte[] data, byte[] key, byte[] iv, CancellationToken cancellationToken)
+        public async Task<IEnumerable<byte>> EncryptAsync(byte[] data, byte[] key, byte[] iv,
+            CancellationToken cancellationToken)
         {
             using (var aes = Aes.Create())
             {
@@ -27,7 +28,8 @@ namespace Glasswall.IdentityManagementService.Business.Store
             }
         }
 
-        public async Task<IEnumerable<byte>> DecryptAsync(byte[] data, byte[] key, byte[] iv, CancellationToken cancellationToken)
+        public async Task<IEnumerable<byte>> DecryptAsync(byte[] data, byte[] key, byte[] iv,
+            CancellationToken cancellationToken)
         {
             using (var aes = Aes.Create())
             {
@@ -45,17 +47,14 @@ namespace Glasswall.IdentityManagementService.Business.Store
             }
         }
 
-        private static async Task<IEnumerable<byte>> PerformCryptography(byte[] data, ICryptoTransform cryptoTransform, CancellationToken cancellationToken)
+        private static async Task<IEnumerable<byte>> PerformCryptography(byte[] data, ICryptoTransform cryptoTransform,
+            CancellationToken cancellationToken)
         {
-            await using (var ms = new MemoryStream())
-            {
-                await using (var cryptoStream = new CryptoStream(ms, cryptoTransform, CryptoStreamMode.Write))
-                {
-                    await cryptoStream.WriteAsync(data, 0, data.Length, cancellationToken);
-                    cryptoStream.FlushFinalBlock();
-                    return ms.ToArray();
-                }
-            }
+            await using var ms = new MemoryStream();
+            await using var cryptoStream = new CryptoStream(ms, cryptoTransform, CryptoStreamMode.Write);
+            await cryptoStream.WriteAsync(data, 0, data.Length, cancellationToken);
+            cryptoStream.FlushFinalBlock();
+            return ms.ToArray();
         }
     }
 }

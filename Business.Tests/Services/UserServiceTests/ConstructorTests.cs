@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Services.UserServiceTests
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests
 {
     [TestFixture]
     public class ConstructorTests : UserMetadataSearchStrategyTestBase

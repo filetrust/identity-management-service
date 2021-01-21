@@ -1,8 +1,7 @@
-﻿using System;
-using Glasswall.IdentityManagementService.Common.Store;
+﻿using Glasswall.IdentityManagementService.Common.Store;
 using NUnit.Framework;
 
-namespace Business.Tests.Store.UserMetadataSearchStrategyTests.DecideAction
+namespace Glasswall.IdentityManagementService.Business.Tests.Store.UserMetadataSearchStrategyTests.DecideAction
 {
     [TestFixture]
     public class DecidingAction : UserMetadataSearchStrategyTestBase

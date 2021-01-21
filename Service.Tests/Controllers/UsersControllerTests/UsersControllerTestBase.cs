@@ -4,6 +4,7 @@ using Glasswall.IdentityManagementService.Api.Controllers;
 using Glasswall.IdentityManagementService.Common.Configuration;
 using Glasswall.IdentityManagementService.Common.Models.Store;
 using Glasswall.IdentityManagementService.Common.Services;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TestCommon;
 
@@ -18,7 +19,7 @@ namespace Service.Tests.Controllers.UsersControllerTests
         protected CancellationToken TestCancellationToken;
         protected User ValidUser;
 
-        protected void CommonSetup()
+        protected void CommonSetup(ControllerContext context = null)
         {
             IdentityManagementConfig = new IdentityManagementServiceConfiguration
             {
@@ -47,11 +48,25 @@ namespace Service.Tests.Controllers.UsersControllerTests
                 Status = UserStatus.Active
             };
 
-            ClassInTest = new UsersController(
-                IdentityManagementConfig, 
-                UserService.Object, 
-                TokenService.Object, 
-                EmailService.Object);
+            if (context == null)
+            {
+                ClassInTest = new UsersController(
+                    IdentityManagementConfig,
+                    UserService.Object,
+                    TokenService.Object,
+                    EmailService.Object);
+            }
+            else
+            {
+                ClassInTest = new UsersController(
+                    IdentityManagementConfig,
+                    UserService.Object,
+                    TokenService.Object,
+                    EmailService.Object)
+                {
+                    ControllerContext = context
+                };
+            }
         }
     }
 }

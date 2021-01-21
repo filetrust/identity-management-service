@@ -6,21 +6,22 @@ using System.Threading.Tasks;
 namespace Glasswall.IdentityManagementService.Common.Store
 {
     /// <summary>
-    /// Provides abstraction of the underlying file share
+    ///     Provides abstraction of the underlying file share
     /// </summary>
     public interface IFileStore
     {
         /// <summary>
-        /// Retrieves a list of paths matching the filter
+        ///     Retrieves a list of paths matching the filter
         /// </summary>
         /// <param name="relativePath">Object path relative to the root of the store</param>
         /// <param name="pathActions">An object that takes the responsibility of recursing the directory</param>
         /// <param name="cancellationToken"></param>
         /// <returns>A list of path matches</returns>
-        IAsyncEnumerable<string> SearchAsync(string relativePath, IPathActions pathActions, CancellationToken cancellationToken);
+        IAsyncEnumerable<string> SearchAsync(string relativePath, IPathActions pathActions,
+            CancellationToken cancellationToken);
 
         /// <summary>
-        /// Determines whether the path exists
+        ///     Determines whether the path exists
         /// </summary>
         /// <param name="relativePath">Object path relative to the root of the store</param>
         /// <param name="cancellationToken">Token to cancel the work</param>
@@ -28,7 +29,7 @@ namespace Glasswall.IdentityManagementService.Common.Store
         Task<bool> ExistsAsync(string relativePath, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Downloads the object at the path specified
+        ///     Downloads the object at the path specified
         /// </summary>
         /// <param name="relativePath">Object path relative to the root of the store</param>
         /// <param name="cancellationToken">Token to cancel the work</param>
@@ -36,7 +37,7 @@ namespace Glasswall.IdentityManagementService.Common.Store
         Task<MemoryStream> ReadAsync(string relativePath, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Saves a file asynchronously
+        ///     Saves a file asynchronously
         /// </summary>
         /// <param name="relativePath">Object path relative to the root of the store</param>
         /// <param name="bytes">Raw data for the file</param>
@@ -45,7 +46,7 @@ namespace Glasswall.IdentityManagementService.Common.Store
         Task WriteAsync(string relativePath, byte[] bytes, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Deletes a directory or file asynchronously
+        ///     Deletes a directory or file asynchronously
         /// </summary>
         /// <param name="relativePath">Object path relative to the root of the store</param>
         /// <param name="cancellationToken">Token to cancel the work</param>

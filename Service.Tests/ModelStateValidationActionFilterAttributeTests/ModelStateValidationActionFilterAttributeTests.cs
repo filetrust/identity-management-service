@@ -15,7 +15,8 @@ using TestCommon;
 namespace Service.Tests.ModelStateValidationActionFilterAttributeTests
 {
     [TestFixture]
-    public class ModelStateValidationActionFilterAttributeTests : UnitTestBase<ModelStateValidationActionFilterAttribute>
+    public class
+        ModelStateValidationActionFilterAttributeTests : UnitTestBase<ModelStateValidationActionFilterAttribute>
     {
         [Test]
         public void Errors_Return_BadRequest()
@@ -46,7 +47,8 @@ namespace Service.Tests.ModelStateValidationActionFilterAttributeTests
 
             ClassInTest.OnActionExecuting(actionExecutingContext);
 
-            Assert.That(actionExecutingContext.Result, Is.InstanceOf<BadRequestObjectResult>().With.Property(nameof(BadRequestObjectResult.Value))
+            Assert.That(actionExecutingContext.Result, Is.InstanceOf<BadRequestObjectResult>().With
+                .Property(nameof(BadRequestObjectResult.Value))
                 .With.Property("errors").One.Items.EqualTo(modelState.ToArray().First()));
         }
     }

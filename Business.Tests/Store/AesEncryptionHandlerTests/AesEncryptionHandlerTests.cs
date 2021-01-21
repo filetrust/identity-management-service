@@ -6,7 +6,7 @@ using Glasswall.IdentityManagementService.Business.Store;
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Store.AesEncryptionHandlerTests
+namespace Glasswall.IdentityManagementService.Business.Tests.Store.AesEncryptionHandlerTests
 {
     [TestFixture]
     public class AesEncryptionHandlerTests : UnitTestBase<AesEncryptionHandler>

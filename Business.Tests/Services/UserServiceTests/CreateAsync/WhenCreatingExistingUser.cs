@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Business.Store;
 using Glasswall.IdentityManagementService.Common.Models.Store;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Services.UserServiceTests.CreateAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.CreateAsync
 {
     [TestFixture]
     public class WhenCreatingExistingUser : UserMetadataSearchStrategyTestBase
@@ -33,9 +33,11 @@ namespace Business.Tests.Services.UserServiceTests.CreateAsync
                 .ReturnsAsync(true);
 
             FileStore.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ValidUser))));
+                .ReturnsAsync(_memoryStream =
+                    new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
 
-            _output = await ClassInTest.CreateAsync(_otherUser = new User { Id = Guid.NewGuid(), Username = ValidUser.Username}, TestCancellationToken);
+            _output = await ClassInTest.CreateAsync(
+                _otherUser = new User {Id = Guid.NewGuid(), Username = ValidUser.Username}, TestCancellationToken);
         }
 
         [OneTimeTearDown]

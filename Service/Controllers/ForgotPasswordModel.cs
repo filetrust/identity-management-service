@@ -4,8 +4,6 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
 {
     public class ForgotPasswordModel
     {
-        [Required]
-        [MinLength(1)]
-        public string Username { get; set; }
+        [Required] [MinLength(1)] public string Username { get; set; }
     }
 }

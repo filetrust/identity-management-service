@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Business.Tests.Services.JwtServiceTests.GetIdentifier
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.JwtServiceTests.GetIdentifier
 {
     [TestFixture]
     public class WhenParsingCorrectlyFormedToken : JwtServiceTestBase

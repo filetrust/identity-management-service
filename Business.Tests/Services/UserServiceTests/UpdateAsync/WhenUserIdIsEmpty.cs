@@ -1,7 +1,6 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
-namespace Business.Tests.Services.UserServiceTests.UpdateAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.UpdateAsync
 {
     [TestFixture]
     public class WhenUserIdIsEmpty : UserMetadataSearchStrategyTestBase
@@ -15,7 +14,8 @@ namespace Business.Tests.Services.UserServiceTests.UpdateAsync
         [Test]
         public void Exception_Is_Thrown()
         {
-            Assert.That(() => ClassInTest.UpdateAsync(null, TestCancellationToken), ThrowsArgumentNullException("user"));
+            Assert.That(() => ClassInTest.UpdateAsync(null, TestCancellationToken),
+                ThrowsArgumentNullException("user"));
         }
     }
 }

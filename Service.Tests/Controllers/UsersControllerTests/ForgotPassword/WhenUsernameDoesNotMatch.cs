@@ -26,11 +26,11 @@ namespace Service.Tests.Controllers.UsersControllerTests.ForgotPassword
 
             UserService.Setup(s =>
                     s.GetAllAsync(It.IsAny<CancellationToken>()))
-                .Returns(new [] { ValidUser }.AsAsyncEnumerable());
+                .Returns(new[] {ValidUser}.AsAsyncEnumerable());
 
             _output = await ClassInTest.ForgotPassword(_input, TestCancellationToken);
         }
-        
+
         [Test]
         public void Ok_Is_Returned()
         {

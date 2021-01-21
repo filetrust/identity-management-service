@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Business.Tests.Services.JwtServiceTests.ValidateSignature
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.JwtServiceTests.ValidateSignature
 {
     [TestFixture]
     public class WhenValidatingSignature : JwtServiceTestBase

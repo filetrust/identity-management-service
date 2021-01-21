@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Glasswall.IdentityManagementService.Common.Models.Dto
 {
-  public class UserModel
+    [ExcludeFromCodeCoverage]
+    public class UserModel
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; }

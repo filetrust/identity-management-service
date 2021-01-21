@@ -15,7 +15,8 @@ namespace Business.Tests.Services.UserServiceTests.DeleteAsync
         [Test]
         public void An_Exception_Is_Thrown_For_User()
         {
-            Assert.That(() => ClassInTest.DeleteAsync(Guid.Empty, TestCancellationToken), ThrowsArgumentException("id", "Value must not be empty"));
+            Assert.That(() => ClassInTest.DeleteAsync(Guid.Empty, TestCancellationToken),
+                ThrowsArgumentException("id", "Value must not be empty"));
         }
     }
 }

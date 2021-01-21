@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Business.Store;
 using Glasswall.IdentityManagementService.Common.Models.Store;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using TestCommon;
 
@@ -37,7 +39,8 @@ namespace Business.Tests.Services.UserServiceTests.AuthenticateAsync
                 .ReturnsAsync(true);
 
             FileStore.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ValidUser))));
+                .ReturnsAsync(_memoryStream =
+                    new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
 
             _output = await ClassInTest.AuthenticateAsync(
                 ValidUser.Username, testPassword, TestCancellationToken);
@@ -59,7 +62,8 @@ namespace Business.Tests.Services.UserServiceTests.AuthenticateAsync
         [Test]
         public void FileStore_Is_Called_Correctly()
         {
-            FileStore.Verify(s => s.SearchAsync(It.Is<string>(f => f == ""), It.IsAny<UserMetadataSearchStrategy>(), It.Is<CancellationToken>(f => f == TestCancellationToken)));
+            FileStore.Verify(s => s.SearchAsync(It.Is<string>(f => f == ""), It.IsAny<UserMetadataSearchStrategy>(),
+                It.Is<CancellationToken>(f => f == TestCancellationToken)));
             FileStore.Verify(s => s.ExistsAsync(_filePath, It.Is<CancellationToken>(f => f == TestCancellationToken)));
             FileStore.Verify(s => s.ReadAsync(_filePath, It.Is<CancellationToken>(f => f == TestCancellationToken)));
 
@@ -68,7 +72,7 @@ namespace Business.Tests.Services.UserServiceTests.AuthenticateAsync
 
         private static (byte[], byte[]) SaltAndHashPassword(string password)
         {
-            using var hmac = new System.Security.Cryptography.HMACSHA512();
+            using var hmac = new HMACSHA512();
             return (hmac.Key, hmac.ComputeHash(Encoding.UTF8.GetBytes(password)));
         }
     }

@@ -9,7 +9,8 @@ namespace Glasswall.IdentityManagementService.Business.Store
 {
     public class AesEncryptionHandler : IEncryptionHandler
     {
-        public async Task<IEnumerable<byte>> EncryptAsync(byte[] data, byte[] key, byte[] iv, CancellationToken cancellationToken)
+        public async Task<IEnumerable<byte>> EncryptAsync(byte[] data, byte[] key, byte[] iv,
+            CancellationToken cancellationToken)
         {
             using (var aes = Aes.Create())
             {
@@ -27,7 +28,8 @@ namespace Glasswall.IdentityManagementService.Business.Store
             }
         }
 
-        public async Task<IEnumerable<byte>> DecryptAsync(byte[] data, byte[] key, byte[] iv, CancellationToken cancellationToken)
+        public async Task<IEnumerable<byte>> DecryptAsync(byte[] data, byte[] key, byte[] iv,
+            CancellationToken cancellationToken)
         {
             using (var aes = Aes.Create())
             {
@@ -45,7 +47,8 @@ namespace Glasswall.IdentityManagementService.Business.Store
             }
         }
 
-        private static async Task<IEnumerable<byte>> PerformCryptography(byte[] data, ICryptoTransform cryptoTransform, CancellationToken cancellationToken)
+        private static async Task<IEnumerable<byte>> PerformCryptography(byte[] data, ICryptoTransform cryptoTransform,
+            CancellationToken cancellationToken)
         {
             await using (var ms = new MemoryStream())
             {

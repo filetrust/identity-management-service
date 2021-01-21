@@ -34,18 +34,22 @@ namespace Service.Tests.StartupTests
         [Test]
         public void Can_Resolve_Distributer_Service()
         {
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenLifetime), TimeSpan.FromDays(1).ToString());
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.EncryptionSecret), "keymckey");
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint), "nameyname");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenLifetime),
+                TimeSpan.FromDays(1).ToString());
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.EncryptionSecret),
+                "keymckey");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint),
+                "nameyname");
             Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenSecret), "keymckey");
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.UserStoreRootPath), _testPath);
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.UserStoreRootPath),
+                _testPath);
 
             ClassInTest = new Startup(new ConfigurationBuilder().AddEnvironmentVariables().Build());
 
             var services = new ServiceCollection();
-            
+
             ClassInTest.ConfigureServices(services);
-            
+
             Assert.That(services.Any(s =>
                 s.ServiceType == typeof(IFileStore)), "No file store was added");
 
@@ -57,11 +61,15 @@ namespace Service.Tests.StartupTests
         {
             var services = new ServiceCollection();
 
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenLifetime), TimeSpan.FromDays(1).ToString());
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.EncryptionSecret), "keymckey");
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint), "nameyname");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenLifetime),
+                TimeSpan.FromDays(1).ToString());
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.EncryptionSecret),
+                "keymckey");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint),
+                "nameyname");
             Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenSecret), "keymckey");
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.UserStoreRootPath), _testPath);
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.UserStoreRootPath),
+                _testPath);
 
             ClassInTest = new Startup(new ConfigurationBuilder().AddEnvironmentVariables().Build());
 
@@ -77,15 +85,20 @@ namespace Service.Tests.StartupTests
         {
             var services = new ServiceCollection();
 
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenLifetime), TimeSpan.FromDays(1).ToString());
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.EncryptionSecret), "keymckey");
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint), "nameyname");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenLifetime),
+                TimeSpan.FromDays(1).ToString());
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.EncryptionSecret),
+                "keymckey");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint),
+                "nameyname");
             Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenSecret), "keymckey");
-            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.UserStoreRootPath), "I DO NOT EXIST");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.UserStoreRootPath),
+                "I DO NOT EXIST");
 
             ClassInTest = new Startup(new ConfigurationBuilder().AddEnvironmentVariables().Build());
 
-            Assert.That(() => ClassInTest.ConfigureServices(services), Throws.Exception.InstanceOf<ConfigurationErrorsException>());
+            Assert.That(() => ClassInTest.ConfigureServices(services),
+                Throws.Exception.InstanceOf<ConfigurationErrorsException>());
         }
 
         [Test]
@@ -95,7 +108,8 @@ namespace Service.Tests.StartupTests
 
             ClassInTest = new Startup(new ConfigurationBuilder().Build());
 
-            Assert.That(() => ClassInTest.ConfigureServices(services), Throws.Exception.InstanceOf<ConfigurationErrorsException>());
+            Assert.That(() => ClassInTest.ConfigureServices(services),
+                Throws.Exception.InstanceOf<ConfigurationErrorsException>());
         }
 
         [Test]

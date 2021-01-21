@@ -1,5 +1,4 @@
-﻿using System;
-using Glasswall.IdentityManagementService.Common.Store;
+﻿using Glasswall.IdentityManagementService.Common.Store;
 using NUnit.Framework;
 
 namespace Business.Tests.Store.UserMetadataSearchStrategyTests.DecideAction

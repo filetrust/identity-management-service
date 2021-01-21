@@ -1,5 +1,4 @@
-﻿using Glasswall.IdentityManagementService.Business.Services;
-using Glasswall.IdentityManagementService.Business.Store;
+﻿using Glasswall.IdentityManagementService.Business.Store;
 using NUnit.Framework;
 using TestCommon;
 

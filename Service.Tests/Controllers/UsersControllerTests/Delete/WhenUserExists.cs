@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using TestCommon;
 
 namespace Service.Tests.Controllers.UsersControllerTests.Delete
 {
@@ -17,7 +16,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.Delete
         public async Task Setup()
         {
             CommonSetup();
-            
+
             _output = await ClassInTest.Delete(ValidUser.Id, TestCancellationToken);
         }
 
@@ -30,7 +29,8 @@ namespace Service.Tests.Controllers.UsersControllerTests.Delete
         [Test]
         public void User_Service_Is_Leveraged_Correctly()
         {
-            UserService.Verify(x => x.DeleteAsync(It.Is<Guid>(f => f == ValidUser.Id), It.Is<CancellationToken>(f => f == TestCancellationToken)));
+            UserService.Verify(x => x.DeleteAsync(It.Is<Guid>(f => f == ValidUser.Id),
+                It.Is<CancellationToken>(f => f == TestCancellationToken)));
             UserService.VerifyNoOtherCalls();
         }
 

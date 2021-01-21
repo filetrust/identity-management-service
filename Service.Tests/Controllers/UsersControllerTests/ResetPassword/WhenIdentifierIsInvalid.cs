@@ -30,7 +30,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.ResetPassword
 
             _output = await ClassInTest.ResetPassword(_input, TestCancellationToken);
         }
-        
+
         [Test]
         public void BadRequestObjectResult_Is_Returned()
         {

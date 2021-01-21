@@ -13,8 +13,8 @@ namespace Glasswall.IdentityManagementService.Common.Models.Email
 
         public NewUserEmail(User createdUser, IIdentityManagementServiceConfiguration config, string confirmEmailToken)
         {
-            _createdUser = createdUser ?? throw new System.ArgumentNullException(nameof(createdUser));
-            _config = config ?? throw new System.ArgumentNullException(nameof(config));
+            _createdUser = createdUser ?? throw new ArgumentNullException(nameof(createdUser));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             _confirmEmailToken = confirmEmailToken ?? throw new ArgumentNullException(nameof(confirmEmailToken));
         }
 
@@ -24,11 +24,12 @@ namespace Glasswall.IdentityManagementService.Common.Models.Email
 
         public override string EmailFrom => "admin@glasswallsolutions.com";
 
-        public override IEnumerable<string> EmailTo => new[] { _createdUser.Email };
+        public override IEnumerable<string> EmailTo => new[] {_createdUser.Email};
 
         private string GetHtmlBody()
         {
-            return $"Please confirm your email <a href=\"{_config.ManagementUIEndpoint}/confirm?token={_confirmEmailToken}\">here</a>";
+            return
+                $"Please confirm your email <a href=\"{_config.ManagementUIEndpoint}/confirm?token={_confirmEmailToken}\">here</a>";
         }
     }
 }

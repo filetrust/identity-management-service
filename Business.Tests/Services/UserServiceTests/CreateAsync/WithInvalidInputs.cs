@@ -1,13 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Glasswall.IdentityManagementService.Business.Store;
-using Glasswall.IdentityManagementService.Common.Models.Store;
-using Moq;
-using NUnit.Framework;
-using TestCommon;
+﻿using NUnit.Framework;
 
 namespace Business.Tests.Services.UserServiceTests.CreateAsync
 {
@@ -23,7 +14,8 @@ namespace Business.Tests.Services.UserServiceTests.CreateAsync
         [Test]
         public void An_Exception_Is_Thrown_For_User()
         {
-            Assert.That(() => ClassInTest.CreateAsync(null, TestCancellationToken), ThrowsArgumentNullException("user"));
+            Assert.That(() => ClassInTest.CreateAsync(null, TestCancellationToken),
+                ThrowsArgumentNullException("user"));
         }
 
         [Test]
@@ -33,7 +25,8 @@ namespace Business.Tests.Services.UserServiceTests.CreateAsync
         public void An_Exception_Is_Thrown_For_Username(string testCase)
         {
             ValidUser.Username = testCase;
-            Assert.That(() => ClassInTest.CreateAsync(ValidUser, TestCancellationToken), ThrowsArgumentException("Username", "Value is required"));
+            Assert.That(() => ClassInTest.CreateAsync(ValidUser, TestCancellationToken),
+                ThrowsArgumentException("Username", "Value is required"));
         }
     }
 }

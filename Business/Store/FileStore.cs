@@ -27,37 +27,43 @@ namespace Glasswall.IdentityManagementService.Business.Store
             _fileStoreOptions = fileStoreOptions ?? throw new ArgumentNullException(nameof(fileStoreOptions));
         }
 
-        public IAsyncEnumerable<string> SearchAsync(string relativePath, IPathActions pathActions, CancellationToken cancellationToken)
+        public IAsyncEnumerable<string> SearchAsync(string relativePath, IPathActions pathActions,
+            CancellationToken cancellationToken)
         {
             if (pathActions == null) throw new ArgumentNullException(nameof(pathActions));
 
-            return InternalSearchAsync(Path.Combine(_fileStoreOptions.RootPath, relativePath), pathActions, cancellationToken);
+            return InternalSearchAsync(Path.Combine(_fileStoreOptions.RootPath, relativePath), pathActions,
+                cancellationToken);
         }
 
         public Task<bool> ExistsAsync(string relativePath, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(relativePath)) throw new ArgumentException("Value must not be null or whitespace", nameof(relativePath));
+            if (string.IsNullOrWhiteSpace(relativePath))
+                throw new ArgumentException("Value must not be null or whitespace", nameof(relativePath));
 
             return InternalExistsAsync(Path.Combine(_fileStoreOptions.RootPath, relativePath));
         }
 
         public Task<MemoryStream> ReadAsync(string relativePath, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(relativePath)) throw new ArgumentException("Value must not be null or whitespace", nameof(relativePath));
+            if (string.IsNullOrWhiteSpace(relativePath))
+                throw new ArgumentException("Value must not be null or whitespace", nameof(relativePath));
 
             return InternalReadAsync(Path.Combine(_fileStoreOptions.RootPath, relativePath), cancellationToken);
         }
 
         public Task WriteAsync(string relativePath, byte[] bytes, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(relativePath)) throw new ArgumentException("Value must not be null or whitespace", nameof(relativePath));
+            if (string.IsNullOrWhiteSpace(relativePath))
+                throw new ArgumentException("Value must not be null or whitespace", nameof(relativePath));
 
             return InternalWriteAsync(Path.Combine(_fileStoreOptions.RootPath, relativePath), bytes, cancellationToken);
         }
 
         public Task DeleteAsync(string relativePath, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(relativePath)) throw new ArgumentException("Value must not be null or whitespace", nameof(relativePath));
+            if (string.IsNullOrWhiteSpace(relativePath))
+                throw new ArgumentException("Value must not be null or whitespace", nameof(relativePath));
 
             return InternalDeleteAsync(Path.Combine(_fileStoreOptions.RootPath, relativePath));
         }
@@ -82,7 +88,7 @@ namespace Glasswall.IdentityManagementService.Business.Store
 
             if (File.Exists(fullPath))
                 File.Delete(fullPath);
-            
+
             if (_fileStoreOptions.EncryptionHandler != null)
                 bytes = await GetEncryptedBytes(bytes, cancellationToken);
 
@@ -112,7 +118,7 @@ namespace Glasswall.IdentityManagementService.Business.Store
             await using (var fs = File.OpenRead(path))
             {
                 if (fs.Length == 0) return null;
-                await fs.CopyToAsync(ms, (int)fs.Length, cancellationToken);
+                await fs.CopyToAsync(ms, (int) fs.Length, cancellationToken);
             }
 
             if (_fileStoreOptions.EncryptionHandler == null) return ms;
@@ -163,7 +169,8 @@ namespace Glasswall.IdentityManagementService.Business.Store
                 switch (action)
                 {
                     case PathAction.Recurse:
-                        await foreach (var subItem in InternalSearchAsync(subDirectory, pathActions, cancellationToken)) yield return subItem;
+                        await foreach (var subItem in InternalSearchAsync(subDirectory, pathActions, cancellationToken))
+                            yield return subItem;
                         break;
                     case PathAction.Collect:
                         yield return relativePath;

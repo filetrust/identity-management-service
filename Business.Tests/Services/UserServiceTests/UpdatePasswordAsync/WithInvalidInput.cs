@@ -14,7 +14,8 @@ namespace Business.Tests.Services.UserServiceTests.UpdatePasswordAsync
         [Test]
         public void Method_Is_Protected_From_User()
         {
-            Assert.That(() => ClassInTest.UpdatePasswordAsync(null, "Password", TestCancellationToken), ThrowsArgumentNullException("user"));
+            Assert.That(() => ClassInTest.UpdatePasswordAsync(null, "Password", TestCancellationToken),
+                ThrowsArgumentNullException("user"));
         }
 
         [Test]
@@ -23,7 +24,8 @@ namespace Business.Tests.Services.UserServiceTests.UpdatePasswordAsync
         [TestCase(" ")]
         public void Method_Is_Protected_From_Password(string testCase)
         {
-            Assert.That(() => ClassInTest.UpdatePasswordAsync(ValidUser, testCase, TestCancellationToken), ThrowsArgumentException("password", "Value cannot be null or whitespace."));
+            Assert.That(() => ClassInTest.UpdatePasswordAsync(ValidUser, testCase, TestCancellationToken),
+                ThrowsArgumentException("password", "Value cannot be null or whitespace."));
         }
     }
 }

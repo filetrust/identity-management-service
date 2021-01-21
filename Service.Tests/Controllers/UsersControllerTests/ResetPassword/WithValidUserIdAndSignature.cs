@@ -42,7 +42,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.ResetPassword
 
             _output = await ClassInTest.ResetPassword(_input, TestCancellationToken);
         }
-        
+
         [Test]
         public void Ok_Is_Returned()
         {
@@ -56,7 +56,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.ResetPassword
         {
             UserService.Verify(
                 x => x.GetByIdAsync(
-                    It.Is<Guid>(f => f == ValidUser.Id), 
+                    It.Is<Guid>(f => f == ValidUser.Id),
                     It.Is<CancellationToken>(f => f == TestCancellationToken)),
                 Times.Once);
             UserService.Verify(

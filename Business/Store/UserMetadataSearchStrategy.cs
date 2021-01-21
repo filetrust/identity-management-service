@@ -1,6 +1,6 @@
-﻿using Glasswall.IdentityManagementService.Common.Store;
-using System;
+﻿using System;
 using System.Linq;
+using Glasswall.IdentityManagementService.Common.Store;
 
 namespace Glasswall.IdentityManagementService.Business.Store
 {

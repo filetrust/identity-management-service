@@ -16,8 +16,9 @@ namespace Glasswall.IdentityManagementService.Api
             CreateHostBuilder(args).Build().Run();
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        private static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.ConfigureKestrel(options =>
@@ -25,11 +26,13 @@ namespace Glasswall.IdentityManagementService.Api
                         options.AddServerHeader = false;
                         options.ConfigureHttpsDefaults(opts =>
                         {
-                            opts.ServerCertificate = LoadCertificate("/etc/ssl/certs/server.crt", "/etc/ssl/private/server.key");
+                            opts.ServerCertificate = LoadCertificate("/etc/ssl/certs/server.crt",
+                                "/etc/ssl/private/server.key");
                         });
                     });
                     webBuilder.UseStartup<Startup>();
                 });
+        }
 
         private static X509Certificate2 LoadCertificate(string crtPath, string keyPath)
         {

@@ -13,7 +13,8 @@ namespace Glasswall.IdentityManagementService.Api.ActionFilters
             if (context.ModelState.ErrorCount > 0)
             {
                 context.Result = new BadRequestObjectResult(new {errors = context.ModelState.ToArray()});
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ModelStateValidationActionFilterAttribute>>();
+                var logger = context.HttpContext.RequestServices
+                    .GetRequiredService<ILogger<ModelStateValidationActionFilterAttribute>>();
                 logger.LogInformation("Request contained bad data");
             }
         }

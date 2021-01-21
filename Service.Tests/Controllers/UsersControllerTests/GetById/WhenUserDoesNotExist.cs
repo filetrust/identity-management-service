@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Glasswall.IdentityManagementService.Common.Models.Store;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -18,7 +17,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.GetById
         public async Task Setup()
         {
             CommonSetup();
-            
+
             _output = await ClassInTest.GetById(ValidUser.Id, TestCancellationToken);
         }
 
@@ -33,7 +32,8 @@ namespace Service.Tests.Controllers.UsersControllerTests.GetById
         [Test]
         public void User_Service_Is_Leveraged_Correctly()
         {
-            UserService.Verify(x => x.GetByIdAsync(It.Is<Guid>(f => f == ValidUser.Id), It.Is<CancellationToken>(f => f == TestCancellationToken)));
+            UserService.Verify(x => x.GetByIdAsync(It.Is<Guid>(f => f == ValidUser.Id),
+                It.Is<CancellationToken>(f => f == TestCancellationToken)));
             UserService.VerifyNoOtherCalls();
         }
 

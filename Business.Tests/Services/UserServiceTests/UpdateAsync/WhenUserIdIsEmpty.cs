@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Business.Tests.Services.UserServiceTests.UpdateAsync
 {
@@ -15,7 +14,8 @@ namespace Business.Tests.Services.UserServiceTests.UpdateAsync
         [Test]
         public void Exception_Is_Thrown()
         {
-            Assert.That(() => ClassInTest.UpdateAsync(null, TestCancellationToken), ThrowsArgumentNullException("user"));
+            Assert.That(() => ClassInTest.UpdateAsync(null, TestCancellationToken),
+                ThrowsArgumentNullException("user"));
         }
     }
 }

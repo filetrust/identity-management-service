@@ -13,7 +13,8 @@ namespace Business.Tests.Services.JwtServiceTests.GetToken
         {
             CommonSetup();
 
-            _output = ClassInTest.GetToken(Guid.NewGuid().ToString(), "MyVeryLongSecretThatIsVeryGoodBecauseItIsVeryLong", TimeSpan.FromDays(1));
+            _output = ClassInTest.GetToken(Guid.NewGuid().ToString(),
+                "MyVeryLongSecretThatIsVeryGoodBecauseItIsVeryLong", TimeSpan.FromDays(1));
         }
 
         [Test]

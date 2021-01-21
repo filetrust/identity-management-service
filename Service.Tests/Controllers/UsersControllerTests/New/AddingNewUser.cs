@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Common.Models.Dto;
@@ -50,7 +48,8 @@ namespace Service.Tests.Controllers.UsersControllerTests.New
         {
             Assert.That(_output, Is.InstanceOf<OkObjectResult>()
                 .With.Property(nameof(OkObjectResult.Value))
-                .WithPropEqual("message", "Registration successful, please check your email for verification instructions"));
+                .WithPropEqual("message",
+                    "Registration successful, please check your email for verification instructions"));
         }
 
         [Test]

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Business.Store;
 using Glasswall.IdentityManagementService.Common.Models.Store;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using TestCommon;
 
@@ -18,7 +19,7 @@ namespace Business.Tests.Services.UserServiceTests.CreateAsync
         private string _filePath;
         private User _output;
         private MemoryStream _memoryStream;
-        
+
         [OneTimeSetUp]
         public async Task Setup()
         {
@@ -32,7 +33,8 @@ namespace Business.Tests.Services.UserServiceTests.CreateAsync
                 .ReturnsAsync(true);
 
             FileStore.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ValidUser))));
+                .ReturnsAsync(_memoryStream =
+                    new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
 
             _output = await ClassInTest.CreateAsync(ValidUser, TestCancellationToken);
         }
@@ -57,7 +59,7 @@ namespace Business.Tests.Services.UserServiceTests.CreateAsync
 
             FileStore.Verify(s => s.WriteAsync(
                     It.Is<string>(f => f == _filePath),
-                    It.Is<byte[]>(f => BytesEqual(f, Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(ValidUser)))),
+                    It.Is<byte[]>(f => BytesEqual(f, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser)))),
                     It.Is<CancellationToken>(f => f == TestCancellationToken)),
                 Times.Once);
             FileStore.Verify(s => s.ReadAsync(_filePath, It.Is<CancellationToken>(f => f == TestCancellationToken)));

@@ -2,7 +2,7 @@ using System;
 
 namespace Glasswall.IdentityManagementService.Common.Models.Dto
 {
-  public class UserModel
+    public class UserModel
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; }

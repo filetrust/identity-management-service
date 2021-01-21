@@ -1,5 +1,4 @@
-﻿using Business.Tests.Services.UserServiceTests;
-using Glasswall.IdentityManagementService.Business.Services;
+﻿using Glasswall.IdentityManagementService.Business.Services;
 using NUnit.Framework;
 using TestCommon;
 

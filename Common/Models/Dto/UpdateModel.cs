@@ -1,5 +1,3 @@
-using System;
-
 namespace Glasswall.IdentityManagementService.Common.Models.Dto
 {
     public class UpdateModel

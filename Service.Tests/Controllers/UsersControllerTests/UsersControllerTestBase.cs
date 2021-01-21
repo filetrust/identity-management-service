@@ -48,9 +48,9 @@ namespace Service.Tests.Controllers.UsersControllerTests
             };
 
             ClassInTest = new UsersController(
-                IdentityManagementConfig, 
-                UserService.Object, 
-                TokenService.Object, 
+                IdentityManagementConfig,
+                UserService.Object,
+                TokenService.Object,
                 EmailService.Object);
         }
     }

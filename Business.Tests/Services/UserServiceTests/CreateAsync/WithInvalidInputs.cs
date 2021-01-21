@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Business.Tests.Services.UserServiceTests.CreateAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.CreateAsync
 {
     [TestFixture]
     public class WithInvalidInputs : UserMetadataSearchStrategyTestBase

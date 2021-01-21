@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Glasswall.IdentityManagementService.Common.Models.Dto
 {
+    [ExcludeFromCodeCoverage]
     public class UpdateModel
     {
         public string FirstName { get; set; }

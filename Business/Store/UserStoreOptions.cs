@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Glasswall.IdentityManagementService.Common.Configuration;
 using Glasswall.IdentityManagementService.Common.Store;
 
 namespace Glasswall.IdentityManagementService.Business.Store
 {
+    [ExcludeFromCodeCoverage]
     public class UserStoreOptions : IFileStoreOptions
     {
         private readonly IIdentityManagementServiceConfiguration _identityManagementServiceConfiguration;
@@ -12,10 +14,8 @@ namespace Glasswall.IdentityManagementService.Business.Store
         public UserStoreOptions(IEncryptionHandler encryptionHandler,
             IIdentityManagementServiceConfiguration identityManagementServiceConfiguration)
         {
-            _identityManagementServiceConfiguration = identityManagementServiceConfiguration ??
-                                                      throw new ArgumentNullException(
-                                                          nameof(identityManagementServiceConfiguration));
-            EncryptionHandler = encryptionHandler ?? throw new ArgumentNullException(nameof(encryptionHandler));
+            _identityManagementServiceConfiguration = identityManagementServiceConfiguration;
+            EncryptionHandler = encryptionHandler;
         }
 
         public string RootPath => _identityManagementServiceConfiguration.UserStoreRootPath;

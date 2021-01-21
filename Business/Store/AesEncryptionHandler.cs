@@ -50,15 +50,11 @@ namespace Glasswall.IdentityManagementService.Business.Store
         private static async Task<IEnumerable<byte>> PerformCryptography(byte[] data, ICryptoTransform cryptoTransform,
             CancellationToken cancellationToken)
         {
-            await using (var ms = new MemoryStream())
-            {
-                await using (var cryptoStream = new CryptoStream(ms, cryptoTransform, CryptoStreamMode.Write))
-                {
-                    await cryptoStream.WriteAsync(data, 0, data.Length, cancellationToken);
-                    cryptoStream.FlushFinalBlock();
-                    return ms.ToArray();
-                }
-            }
+            await using var ms = new MemoryStream();
+            await using var cryptoStream = new CryptoStream(ms, cryptoTransform, CryptoStreamMode.Write);
+            await cryptoStream.WriteAsync(data, 0, data.Length, cancellationToken);
+            cryptoStream.FlushFinalBlock();
+            return ms.ToArray();
         }
     }
 }

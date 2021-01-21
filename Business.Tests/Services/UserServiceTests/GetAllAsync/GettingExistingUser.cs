@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Services.UserServiceTests.GetAllAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.GetAllAsync
 {
     [TestFixture]
     public class GettingExistingUser : UserMetadataSearchStrategyTestBase

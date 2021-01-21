@@ -6,7 +6,7 @@ using Glasswall.IdentityManagementService.Common.Store;
 using Moq;
 using TestCommon;
 
-namespace Business.Tests.Services.UserServiceTests
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests
 {
     public abstract class UserMetadataSearchStrategyTestBase : UnitTestBase<UserService>
     {

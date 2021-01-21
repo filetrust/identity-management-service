@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Business.Tests.Services.UserServiceTests.DeleteAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.DeleteAsync
 {
     [TestFixture]
     public class WithInvalidInputs : UserMetadataSearchStrategyTestBase

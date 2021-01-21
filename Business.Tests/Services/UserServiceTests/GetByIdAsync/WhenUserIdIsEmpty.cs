@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Business.Tests.Services.UserServiceTests.GetByIdAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.GetByIdAsync
 {
     [TestFixture]
     public class WhenUserIdIsEmpty : UserMetadataSearchStrategyTestBase

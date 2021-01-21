@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Api.ActionFilters;
@@ -219,6 +220,17 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var header))
+                throw new InvalidOperationException("Authorization filter did not get applied");
+
+            var token = header.ToString().Split(" ").Last();
+
+            if (!Guid.TryParse(_tokenService.GetIdentifier(token), out var userId))
+                return BadRequest(new {message = "Token identifier was not valid"});
+
+            if (userId == id)
+                return BadRequest(new {message = "Cannot delete yourself"});
+
             await _userService.DeleteAsync(id, cancellationToken);
 
             return Ok();

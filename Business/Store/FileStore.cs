@@ -13,7 +13,7 @@ namespace Glasswall.IdentityManagementService.Business.Store
 {
     public class FileStore : IFileStore
     {
-        private const string EncryptedMarker = "ThisFileIsEncrypted";
+        public const string EncryptedMarker = "ThisFileIsEncrypted";
         private const int InitializationVectorLength = 16;
         private readonly ILogger<FileStore> _logger;
         private readonly IFileStoreOptions _fileStoreOptions;

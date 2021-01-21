@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Services.JwtServiceTests
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.JwtServiceTests
 {
     [TestFixture]
     public class ConstructorTests : JwtServiceTestBase

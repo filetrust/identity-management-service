@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Business.Tests.Services.JwtServiceTests.GetToken
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.JwtServiceTests.GetToken
 {
     [TestFixture]
     public class WhenRequestingToken : JwtServiceTestBase

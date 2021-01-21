@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Business.Tests.Services.UserServiceTests.UpdatePasswordAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.UpdatePasswordAsync
 {
     [TestFixture]
     public class WithInvalidInput : UserMetadataSearchStrategyTestBase

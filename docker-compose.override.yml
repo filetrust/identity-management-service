@@ -5,14 +5,14 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - TokenSecret=
+      - TokenSecret=IamAVeryLongAndDodgeySecret
       - TokenLifetime=00:01:00
-      - SmtpHost=
-      - SmtpPort=
-      - SmtpUser=
-      - SmtpPass=
-      - EncryptionSecret=
-      - ManagementUIEndpoint=
+      - SmtpHost=smtp.gmail.com
+      - SmtpPort=587
+      - SmtpUser=chiisaimurasaki@gmail.com
+      - SmtpPass=grbppfnxxkkyrhwb
+      - EncryptionSecret=IamAVeryLongAndDodgeySecrets2312
+      - ManagementUIEndpoint=IamAVeryLongAndDodgeySecret
     ports:
       - "6004:80"
       - "6005:443"

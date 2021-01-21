@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using TestCommon;
 
-namespace Business.Tests.Services.UserServiceTests.UpdateAsync
+namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.UpdateAsync
 {
     [TestFixture]
     public class WhenUpdatingUserWithExistingUsername : UserMetadataSearchStrategyTestBase

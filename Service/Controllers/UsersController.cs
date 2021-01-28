@@ -138,6 +138,17 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost("validate-token")]
+        public IActionResult ValidateToken([FromBody] ValidateResetTokenModel model)
+        {
+            // If the current users password can decode incoming token, this is a valid request
+            if (!_tokenService.ValidateSignature(model.Token, _identityManagementServiceConfiguration.TokenSecret))
+                return Unauthorized(new { message = "Token signature does not match." });
+
+            return Ok(new { message = "Token is valid" });
+        }
+
+        [AllowAnonymous]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordModel model,
             CancellationToken cancellationToken)

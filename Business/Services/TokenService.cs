@@ -53,7 +53,7 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
             var readToken = tokenHandler.ReadJwtToken(token);
             
-            return signature == computedSignature && readToken.ValidTo < DateTime.UtcNow.AddMinutes(1);
+            return signature == computedSignature && readToken.ValidTo >= DateTime.UtcNow;
         }
 
         private static string Base64UrlEncode(byte[] input)

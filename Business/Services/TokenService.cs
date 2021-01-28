@@ -48,7 +48,12 @@ namespace Glasswall.IdentityManagementService.Business.Services
             var hash = alg.ComputeHash(Encoding.UTF8.GetBytes(string.Join(".", header, payload)));
             var computedSignature = Base64UrlEncode(hash);
 
-            return signature == computedSignature;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var readToken = tokenHandler.ReadJwtToken(token);
+            
+            return signature == computedSignature && readToken.ValidTo < DateTime.UtcNow.AddMinutes(1);
         }
 
         private static string Base64UrlEncode(byte[] input)

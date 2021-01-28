@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
@@ -32,30 +33,58 @@ namespace Glasswall.IdentityManagementService.Business.Services
         {
             if (emailModel == null) throw new ArgumentNullException(nameof(emailModel));
 
-            _logger.LogInformation(
-                $"Sending message from '{emailModel.EmailFrom}' to '{string.Join(";", emailModel.EmailTo)}'");
+            CheckConfigItem("SmtpHost");
+            CheckConfigItem("SmtpPort");
+            CheckConfigItem("SmtpUser");
+            CheckConfigItem("SmtpPass");
+            CheckConfigItem("SmtpSecureSocketOptions");
+            
+            _logger.LogInformation($"Sending message from '{emailModel.EmailFrom}' to '{string.Join(";", emailModel.EmailTo)}'");
 
             var mimeMessage = new MimeMessage();
-            mimeMessage.From.Add(MailboxAddress.Parse(emailModel.EmailFrom ?? _configuration["EmailFrom"]));
+            mimeMessage.From.Add(MailboxAddress.Parse(_configuration["SmtpUser"]));
             mimeMessage.To.Add(MailboxAddress.Parse(emailModel.EmailTo.FirstOrDefault()));
             mimeMessage.Subject = emailModel.Subject;
             mimeMessage.Body = new TextPart(TextFormat.Html) {Text = emailModel.Body};
 
-            return InternalSendAsync(mimeMessage, cancellationToken);
+            return TryInternalSendAsync(mimeMessage, 0, cancellationToken);
         }
 
-        private async Task InternalSendAsync(MimeMessage mimeMessage, CancellationToken cancellationToken)
+        private void CheckConfigItem(string key)
         {
-            using var client = new SmtpClient();
+            if (string.IsNullOrWhiteSpace(_configuration[key])) 
+                throw new ConfigurationErrorsException($"{key} is not set");
+        }
 
-            await client.ConnectAsync(_configuration["SmtpHost"], int.Parse(_configuration["SmtpPort"]),
-                SecureSocketOptions.StartTls, cancellationToken);
+        private async Task TryInternalSendAsync(MimeMessage mimeMessage, int cTry, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var host = _configuration["SmtpHost"];
+                var port = int.Parse(_configuration["SmtpPort"]);
+                var options = Enum.Parse<SecureSocketOptions>(_configuration["SmtpSecureSocketOptions"]);
+                var user = _configuration["SmtpUser"];
+                var pwd = _configuration["SmtpPass"];
 
-            await client.AuthenticateAsync(_configuration["SmtpUser"], _configuration["SmtpPass"], cancellationToken);
+                using var client = new SmtpClient();
 
-            await client.SendAsync(FormatOptions.Default, mimeMessage, cancellationToken);
+                await client.ConnectAsync(host, port, options, cancellationToken);
 
-            await client.DisconnectAsync(true, cancellationToken);
+                await client.AuthenticateAsync(user, pwd, cancellationToken);
+
+                await client.SendAsync(FormatOptions.Default, mimeMessage, cancellationToken);
+
+                await client.DisconnectAsync(true, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Could not send mail");
+
+                if (cTry == 5)
+                    throw;
+
+                await TryInternalSendAsync(mimeMessage, cTry + 1, cancellationToken);
+            }
         }
     }
 }

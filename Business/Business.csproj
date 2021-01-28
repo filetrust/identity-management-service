@@ -9,6 +9,7 @@
     <PackageReference Include="MailKit" Version="2.10.1" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="5.0.1" />
     <PackageReference Include="MimeKit" Version="2.10.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

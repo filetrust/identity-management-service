@@ -7,10 +7,11 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - TokenSecret=
       - TokenLifetime=00:01:00
-      - SmtpHost=
-      - SmtpPort=
+      - SmtpHost=smtp.example.com
+      - SmtpPort=587
       - SmtpUser=
       - SmtpPass=
+      - SmtpSecureSocketOptions=StartTls
       - EncryptionSecret=
       - ManagementUIEndpoint=
     ports:

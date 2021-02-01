@@ -17,7 +17,7 @@ namespace Glasswall.IdentityManagementService.Common.Models.Email
         }
 
         public override string Body =>
-            $"You have successfully set your password. Please log into your account <a href=\"{_config.ManagementUIEndpoint}\">here</a>.";
+            $"You have successfully set your password. Please log into your account <a href=\"{_config.ManagementUIEndpoint.TrimEnd('/')}\">here</a>.";
 
         public override string Subject => "Your Password has been changed.";
         public override string EmailFrom => "admin@glasswallsolutions.com";

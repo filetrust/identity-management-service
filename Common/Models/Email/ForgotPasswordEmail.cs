@@ -19,7 +19,7 @@ namespace Glasswall.IdentityManagementService.Common.Models.Email
         }
 
         public override string Body =>
-            $"Please reset your password at '{_config.ManagementUIEndpoint}/reset?Token={_resetToken}";
+            $"Please reset your password <a href=\"{_config.ManagementUIEndpoint.TrimEnd('/')}/reset?Token={_resetToken}\">here</a>";
 
         public override string Subject => "Password reset notification";
         public override string EmailFrom => "admin@glasswallsolutions.com";

@@ -74,7 +74,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.ForgotPassword
             EmailService.Verify(x => x.SendAsync(It.Is<ForgotPasswordEmail>(
                         f => f.Subject == "Password reset notification"
                              && f.Body ==
-                             $"Please reset your password at '{IdentityManagementConfig.ManagementUIEndpoint}/reset?Token={_validToken}"
+                             $"Please reset your password <a href=\"{IdentityManagementConfig.ManagementUIEndpoint.TrimEnd('/')}/reset?Token={_validToken}\">here</a>"
                              && f.EmailFrom == "admin@glasswallsolutions.com"
                              && f.EmailTo.Contains(ValidUser.Email)),
                     It.Is<CancellationToken>(f => f == TestCancellationToken)),

@@ -106,7 +106,7 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
             if (!string.IsNullOrWhiteSpace(userParam.FirstName)) user.FirstName = userParam.FirstName;
             if (!string.IsNullOrWhiteSpace(userParam.LastName)) user.LastName = userParam.LastName;
-            if (!string.IsNullOrWhiteSpace(userParam.Email)) user.LastName = userParam.Email;
+            if (!string.IsNullOrWhiteSpace(userParam.Email)) user.Email = userParam.Email;
 
             user.Status = userParam.Status;
 

@@ -29,7 +29,7 @@ namespace Glasswall.IdentityManagementService.Common.Models.Email
         private string GetHtmlBody()
         {
             return
-                $"Please confirm your email <a href=\"{_config.ManagementUIEndpoint}/confirm?token={_confirmEmailToken}\">here</a>";
+                $"Please confirm your email <a href=\"{_config.ManagementUIEndpoint.TrimEnd('/')}/confirm?token={_confirmEmailToken}\">here</a>";
         }
     }
 }

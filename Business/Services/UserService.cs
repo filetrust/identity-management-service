@@ -25,6 +25,13 @@ namespace Glasswall.IdentityManagementService.Business.Services
             _fileStore = fileStore ?? throw new ArgumentNullException(nameof(fileStore));
         }
 
+        public Task<UserEditOperationState> CreateAsync(User user, CancellationToken cancellationToken)
+        {
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (string.IsNullOrWhiteSpace(user.Username)) throw new ArgumentException("Value is required", nameof(user.Username));
+            return InternalCreateAsync(user, cancellationToken);
+        }
+
         public Task<User> AuthenticateAsync(string username, string password, CancellationToken cancellationToken)
         {
             return InternalAuthenticateAsync(username, password, cancellationToken);
@@ -32,85 +39,51 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
         public async IAsyncEnumerable<User> GetAllAsync([EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            await foreach (var filePath in _fileStore.SearchAsync("", new UserMetadataSearchStrategy(),
-                cancellationToken)) yield return await InternalDownloadAsync(filePath, cancellationToken);
+            await foreach (var filePath in _fileStore.SearchAsync("", new UserMetadataSearchStrategy(), cancellationToken)) 
+                yield return await InternalDownloadAsync(filePath, cancellationToken);
         }
 
         public Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             if (id == Guid.Empty) throw new ArgumentException("Value must not be empty", nameof(id));
-
             return InternalDownloadAsync($"{id}.json", cancellationToken);
         }
-
-        public Task<User> CreateAsync(User user, CancellationToken cancellationToken)
+        
+        public Task<UserEditOperationState> UpdateAsync(User user, CancellationToken cancellationToken)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
-            if (string.IsNullOrWhiteSpace(user.Username))
-                throw new ArgumentException("Value is required", nameof(user.Username));
-
-            return InternalCreateAsync(user, cancellationToken);
-        }
-
-        public Task UpdateAsync(User user, CancellationToken cancellationToken)
-        {
-            if (user == null) throw new ArgumentNullException(nameof(user));
-
             return InternalUpdateAsync(user, cancellationToken);
         }
 
-        public Task DeleteAsync(Guid id, CancellationToken cancellationToken)
-        {
-            if (id == Guid.Empty) throw new ArgumentException("Value must not be empty", nameof(id));
-            return _fileStore.DeleteAsync($"{id}.json", cancellationToken);
-        }
-
-        public Task UpdatePasswordAsync(User user, string password, CancellationToken cancellationToken)
+        public Task<UserEditOperationState> UpdatePasswordAsync(User user, string password, CancellationToken cancellationToken)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
-            if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(password));
-
-            (user.PasswordSalt, user.PasswordHash) = SaltAndHashPassword(password);
-
-            return InternalUploadAsync(user, cancellationToken);
+            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(password));
+            return InternalUpdatePasswordAsync(user.Id, password, cancellationToken);
         }
 
-        private async Task<User> InternalCreateAsync(User user, CancellationToken cancellationToken)
+        public Task<UserEditOperationState> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            await foreach (var otherUser in GetAllAsync(cancellationToken))
-                if (otherUser.Id != user.Id && otherUser.Username == user.Username)
-                    return otherUser;
+            if (id == Guid.Empty) throw new ArgumentException("Value must not be empty", nameof(id));
+            return InternalDeleteAsync(id, cancellationToken);
+        }
+
+        private async Task<UserEditOperationState> InternalCreateAsync(User userParam, CancellationToken cancellationToken)
+        {
+            var user = await GetByIdAsync(userParam.Id, cancellationToken);
+            if (user != null) return new UserEditOperationState(user); //, new UserDataNotUniqueError(userParam.Id, nameof(userParam.Id), userParam.Id.ToString()));
+
+            var dErrors = await GetDuplicationErrors(userParam, cancellationToken);
+            if (dErrors.Any()) return new UserEditOperationState(userParam, dErrors);
 
             var (passwordSalt, passwordHash) = SaltAndHashPassword(RandomPassword(DefaultPasswordLength));
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-            user.Status = UserStatus.Active;
+            userParam.PasswordHash = passwordHash;
+            userParam.PasswordSalt = passwordSalt;
+            userParam.Status = UserStatus.Active;
 
-            await InternalUploadAsync(user, cancellationToken);
-            return user;
-        }
-
-        private async Task InternalUpdateAsync(User userParam, CancellationToken cancellationToken)
-        {
-            var user = await GetByIdAsync(userParam.Id, cancellationToken);
-
-            if (user == null) throw new UserNotFoundException(userParam.Id);
-
-            await foreach (var otherUser in GetAllAsync(cancellationToken))
-                if (otherUser.Id != userParam.Id && otherUser.Username == userParam.Username)
-                    throw new UsernameAlreadyTakenException(otherUser.Id, userParam.Username);
-
-            user.Username = userParam.Username;
-
-            if (!string.IsNullOrWhiteSpace(userParam.FirstName)) user.FirstName = userParam.FirstName;
-            if (!string.IsNullOrWhiteSpace(userParam.LastName)) user.LastName = userParam.LastName;
-            if (!string.IsNullOrWhiteSpace(userParam.Email)) user.Email = userParam.Email;
-
-            user.Status = userParam.Status;
-
-            await InternalUploadAsync(user, cancellationToken);
+            await InternalUploadAsync(userParam, cancellationToken);
+            return new UserEditOperationState(userParam);
         }
 
         private async Task<User> InternalDownloadAsync(string path, CancellationToken ct)
@@ -120,13 +93,7 @@ namespace Glasswall.IdentityManagementService.Business.Services
             var fileString = Encoding.UTF8.GetString(file.ToArray());
             return JsonConvert.DeserializeObject<User>(fileString);
         }
-
-        private async Task InternalUploadAsync(User user, CancellationToken ct)
-        {
-            var path = $"{user.Id}.json";
-            await _fileStore.WriteAsync(path, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user)), ct);
-        }
-
+        
         private async Task<User> InternalAuthenticateAsync(string username, string password,
             CancellationToken cancellationToken)
         {
@@ -135,6 +102,65 @@ namespace Glasswall.IdentityManagementService.Business.Services
                     return user;
 
             return null;
+        }
+        
+        private async Task<UserEditOperationState> InternalUpdateAsync(User userParam, CancellationToken cancellationToken)
+        {
+            var user = await GetByIdAsync(userParam.Id, cancellationToken);
+            if (user == null) return new UserEditOperationState(null, new UserNotFoundError(userParam.Id));
+
+            var errors = await GetDuplicationErrors(userParam, cancellationToken);
+            if (errors.Any()) return new UserEditOperationState(userParam, errors);
+
+            user.FirstName = userParam.FirstName;
+            user.LastName = userParam.LastName;
+            user.Email = userParam.Email;
+            user.Username = userParam.Username;
+            user.Status = userParam.Status;
+
+            await InternalUploadAsync(user, cancellationToken);
+
+            return new UserEditOperationState(user);
+        }
+
+        private async Task<UserEditOperationState> InternalUpdatePasswordAsync(Guid id, string password, CancellationToken cancellationToken)
+        {
+            var user = await GetByIdAsync(id, cancellationToken);
+
+            if (user == null) return new UserEditOperationState(null, new UserNotFoundError(id));
+
+            (user.PasswordSalt, user.PasswordHash) = SaltAndHashPassword(password);
+
+            await InternalUploadAsync(user, cancellationToken);
+
+            return new UserEditOperationState(user);
+        }
+
+        private async Task<UserEditOperationState> InternalDeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            await _fileStore.DeleteAsync($"{id}.json", cancellationToken);
+            return new UserEditOperationState();
+        }
+
+        private async Task<UserWriteError[]> GetDuplicationErrors(User userParam, CancellationToken cancellationToken)
+        {
+            var errors = new List<UserWriteError>();
+
+            await foreach (var otherUser in GetAllAsync(cancellationToken))
+            {
+                if (otherUser.Id == userParam.Id) continue;
+
+                if (otherUser.Username == userParam.Username) errors.Add(new UserDataNotUniqueError(otherUser.Id, nameof(otherUser.Username), userParam.Username));
+                if (otherUser.Email == userParam.Email) errors.Add(new UserDataNotUniqueError(otherUser.Id, nameof(otherUser.Email), userParam.Email));
+            }
+
+            return errors.ToArray();
+        }
+
+        private async Task InternalUploadAsync(User user, CancellationToken ct)
+        {
+            var path = $"{user.Id}.json";
+            await _fileStore.WriteAsync(path, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user)), ct);
         }
 
         private static (byte[], byte[]) SaltAndHashPassword(string password)

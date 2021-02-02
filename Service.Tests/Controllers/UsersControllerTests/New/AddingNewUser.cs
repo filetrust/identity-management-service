@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Common.Models.Dto;
 using Glasswall.IdentityManagementService.Common.Models.Email;
 using Glasswall.IdentityManagementService.Common.Models.Store;
+using Glasswall.IdentityManagementService.Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -34,7 +35,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.New
 
             UserService.Setup(s =>
                     s.CreateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(ValidUser);
+                .ReturnsAsync(new UserEditOperationState(ValidUser));
 
             TokenService.Setup(s => s.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TimeSpan>()))
                 .Returns(_validToken = "Some token");

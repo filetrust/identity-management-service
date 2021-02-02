@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Service.Tests.Controllers.UsersControllerTests.Update
 {
     [TestFixture]
-    public class WhenUpdatingUser : UsersControllerTestBase
+    public class WhenUpdatingUserFails : UsersControllerTestBase
     {
         private UpdateModel _input;
         private IActionResult _output;
@@ -31,7 +31,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.Update
 
             UserService.Setup(s =>
                     s.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new UserEditOperationState(ValidUser));
+                .ReturnsAsync(new UserEditOperationState(ValidUser, new UserWriteError("key", "some error type", "some error")));
 
             TokenService.Setup(s => s.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TimeSpan>()))
                 .Returns("Some token");
@@ -41,9 +41,9 @@ namespace Service.Tests.Controllers.UsersControllerTests.Update
 
 
         [Test]
-        public void Ok_Is_Returned()
+        public void BadRequest_Is_Returned()
         {
-            Assert.That(_output, Is.InstanceOf<OkResult>());
+            Assert.That(_output, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         [Test]

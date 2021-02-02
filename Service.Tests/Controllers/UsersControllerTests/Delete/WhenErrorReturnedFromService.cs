@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace Service.Tests.Controllers.UsersControllerTests.Delete
 {
     [TestFixture]
-    public class WhenUserExists : UsersControllerTestBase
+    public class WhenErrorReturnedFromService : UsersControllerTestBase
     {
         private IActionResult _output;
 
@@ -30,7 +30,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.Delete
                 .Returns(Guid.NewGuid().ToString());
 
             UserService.Setup(s => s.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new UserEditOperationState());
+                .ReturnsAsync(new UserEditOperationState(null, new UserWriteError("key", "error", "error")));
 
             _output = await ClassInTest.Delete(ValidUser.Id, TestCancellationToken);
         }
@@ -38,7 +38,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.Delete
         [Test]
         public void Ok_Is_Returned()
         {
-            Assert.That(_output, Is.InstanceOf<OkResult>());
+            Assert.That(_output, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         [Test]

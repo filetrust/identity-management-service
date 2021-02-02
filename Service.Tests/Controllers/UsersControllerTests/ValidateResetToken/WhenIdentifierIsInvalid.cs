@@ -12,7 +12,6 @@ namespace Service.Tests.Controllers.UsersControllerTests.ValidateResetToken
     {
         private ValidateResetTokenModel _input;
         private IActionResult _output;
-        private string _validToken;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -21,7 +20,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.ValidateResetToken
 
             _input = new ValidateResetTokenModel
             {
-                Token = _validToken = "Some token"
+                Token = "Some token"
             };
 
             TokenService.Setup(s => s.GetIdentifier(It.IsAny<string>()))

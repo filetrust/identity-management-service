@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,10 +16,11 @@ using TestCommon;
 namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.CreateAsync
 {
     [TestFixture]
-    public class WhenCreatingExistingUser : UserMetadataSearchStrategyTestBase
+    public class WhenCreatingUserWithDuplicateData : UserMetadataSearchStrategyTestBase
     {
         private UserEditOperationState _output;
         private MemoryStream _memoryStream;
+        private User _inputUser;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -29,15 +31,18 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
                     It.IsAny<CancellationToken>()))
                 .Returns(new[] {$"{ValidUser.Id}.json"}.AsAsyncEnumerable());
 
-            FileStore.Setup(s => s.ExistsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            FileStore.Setup(s => s.ExistsAsync(It.Is<string>(f => f == $"{ValidUser.Id}.json"), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
             FileStore.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_memoryStream =
                     new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
 
-            _output = await ClassInTest.CreateAsync(
-                new User {Id = Guid.NewGuid(), Username = ValidUser.Username}, TestCancellationToken);
+            _inputUser = CreateUser();
+            _inputUser.Email = ValidUser.Email;
+            _inputUser.Username = ValidUser.Username;
+
+            _output = await ClassInTest.CreateAsync(_inputUser, TestCancellationToken);
         }
 
         [OneTimeTearDown]
@@ -47,9 +52,12 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
         }
 
         [Test]
-        public void User_Is_Returned()
+        public void Output_Is_Returned()
         {
-            Assert.That(_output.User.Id, Is.EqualTo(ValidUser.Id));
+            Assert.That(_output.User, Is.EqualTo(_inputUser));
+            Assert.That(_output.Errors.SelectMany(f => f.Value), Has.Exactly(2).InstanceOf<UserDataNotUniqueError>());
+            Assert.That(_output.Errors.SelectMany(f => f.Value), Has.One.With.Property(nameof(UserDataNotUniqueError.ErrorMessage)).EqualTo($"Username: '{_inputUser.Username}' is already taken by user with id '{ValidUser.Id}'"));
+            Assert.That(_output.Errors.SelectMany(f => f.Value), Has.One.With.Property(nameof(UserDataNotUniqueError.ErrorMessage)).EqualTo($"Email: '{_inputUser.Email}' is already taken by user with id '{ValidUser.Id}'"));
         }
     }
 }

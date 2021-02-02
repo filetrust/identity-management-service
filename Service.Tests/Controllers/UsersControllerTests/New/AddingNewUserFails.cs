@@ -1,19 +1,21 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Common.Models.Dto;
+using Glasswall.IdentityManagementService.Common.Models.Email;
 using Glasswall.IdentityManagementService.Common.Models.Store;
 using Glasswall.IdentityManagementService.Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 
-namespace Service.Tests.Controllers.UsersControllerTests.Update
+namespace Service.Tests.Controllers.UsersControllerTests.New
 {
     [TestFixture]
-    public class WhenUpdatingUser : UsersControllerTestBase
+    public class AddingNewUserFails : UsersControllerTestBase
     {
-        private UpdateModel _input;
+        private RegisterModel _input;
         private IActionResult _output;
 
         [OneTimeSetUp]
@@ -21,7 +23,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.Update
         {
             CommonSetup();
 
-            _input = new UpdateModel
+            _input = new RegisterModel
             {
                 Username = ValidUser.Username,
                 Email = ValidUser.Email,
@@ -30,27 +32,27 @@ namespace Service.Tests.Controllers.UsersControllerTests.Update
             };
 
             UserService.Setup(s =>
-                    s.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new UserEditOperationState(ValidUser));
+                    s.CreateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UserEditOperationState(ValidUser, new UserWriteError("key", "error type", "error")));
 
             TokenService.Setup(s => s.GetToken(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TimeSpan>()))
                 .Returns("Some token");
 
-            _output = await ClassInTest.Update(ValidUser.Id, _input, TestCancellationToken);
+            _output = await ClassInTest.New(_input, TestCancellationToken);
         }
 
 
         [Test]
-        public void Ok_Is_Returned()
+        public void BadRequestObjectResult_Is_Returned()
         {
-            Assert.That(_output, Is.InstanceOf<OkResult>());
+            Assert.That(_output, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         [Test]
         public void User_Service_Is_Leveraged_Correctly()
         {
             UserService.Verify(
-                x => x.UpdateAsync(
+                x => x.CreateAsync(
                     It.Is<User>(f =>
                         f.Id != Guid.Empty && f.Username == ValidUser.Username &&
                         f.FirstName == ValidUser.FirstName && f.LastName == ValidUser.LastName &&

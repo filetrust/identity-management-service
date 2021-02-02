@@ -16,7 +16,7 @@ using TestCommon;
 namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServiceTests.UpdateAsync
 {
     [TestFixture]
-    public class WhenUpdatingUserWithExistingUsername : UserMetadataSearchStrategyTestBase
+    public class WhenUpdatingUserWithExistingEmail : UserMetadataSearchStrategyTestBase
     {
         private UserEditOperationState _output;
         private User _inputUser;
@@ -27,7 +27,7 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
             CommonSetup();
 
             _inputUser = CreateUser();
-            _inputUser.Username = ValidUser.Username;
+            _inputUser.Email = ValidUser.Email;
 
             FileStore.Setup(s => s.SearchAsync(It.IsAny<string>(), It.IsAny<UserMetadataSearchStrategy>(),
                     It.IsAny<CancellationToken>()))

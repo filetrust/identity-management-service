@@ -14,7 +14,6 @@ namespace Service.Tests.Controllers.UsersControllerTests.ResetPassword
     {
         private ResetPasswordModel _input;
         private IActionResult _output;
-        private string _validToken;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -23,7 +22,7 @@ namespace Service.Tests.Controllers.UsersControllerTests.ResetPassword
 
             _input = new ResetPasswordModel
             {
-                Token = _validToken = "Some token"
+                Token = "Some token"
             };
 
             UserService.Setup(s =>

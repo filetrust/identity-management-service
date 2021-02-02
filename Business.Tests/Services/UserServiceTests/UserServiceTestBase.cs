@@ -19,10 +19,18 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
             FileStore = new Mock<IFileStore>();
             TestCancellationToken = new CancellationToken(false);
 
-            ValidUser = new User
+            ValidUser = CreateUser();
+
+            ClassInTest = new UserService(
+                FileStore.Object);
+        }
+
+        protected User CreateUser()
+        {
+            return new User
             {
-                Username = "Username1",
-                Email = "email@email.email",
+                Username = Guid.NewGuid().ToString(),
+                Email = $"{Guid.NewGuid()}@email.email",
                 FirstName = "Mr",
                 LastName = "Man",
                 Id = Guid.NewGuid(),
@@ -30,9 +38,6 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
                 PasswordSalt = new byte[] {0x01, 0x13},
                 Status = UserStatus.Active
             };
-
-            ClassInTest = new UserService(
-                FileStore.Object);
         }
     }
 }

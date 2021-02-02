@@ -66,24 +66,27 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
         [HttpPost("new")]
         public async Task<IActionResult> New([FromBody] RegisterModel model, CancellationToken cancellationToken)
         {
-            var id = Guid.NewGuid();
+            if (model.Id == Guid.Empty) model.Id = Guid.NewGuid();
 
-            var createdUser = await _userService.CreateAsync(new User
+            var operationState = await _userService.CreateAsync(new User
             {
-                Id = id,
+                Id = model.Id,
                 Username = model.Username,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email
             }, cancellationToken);
 
+            if (operationState.Errors.Any())
+                return BadRequest(new {errors = operationState.Errors});
+
             var confirmEmailToken = _tokenService.GetToken(
-                createdUser.Id.ToString(),
-                string.Join(null, createdUser.PasswordHash),
+                operationState.User.Id.ToString(),
+                string.Join(null, operationState.User.PasswordHash),
                 _identityManagementServiceConfiguration.TokenLifetime);
 
             await _emailService.SendAsync(
-                new NewUserEmail(createdUser, _identityManagementServiceConfiguration, confirmEmailToken),
+                new NewUserEmail(operationState.User, _identityManagementServiceConfiguration, confirmEmailToken),
                 cancellationToken);
 
             return Ok(new {message = "Registration successful, please check your email for verification instructions"});
@@ -158,14 +161,16 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
 
             var currentUserDetails = await _userService.GetByIdAsync(userId, cancellationToken);
 
-            if (currentUserDetails == null)
-                return BadRequest(new {message = "User was not found"});
+            if (currentUserDetails == null) return BadRequest(new {message = "User was not found"});
 
             // If the current users password can decode incoming token, this is a valid request
             if (!_tokenService.ValidateSignature(model.Token, string.Join(null, currentUserDetails.PasswordHash)))
                 return BadRequest(new {message = "Token signature does not match."});
 
-            await _userService.UpdatePasswordAsync(currentUserDetails, model.Password, cancellationToken);
+            var operationState = await _userService.UpdatePasswordAsync(currentUserDetails, model.Password, cancellationToken);
+
+            if (operationState.Errors.Any())
+                return BadRequest(new {errors = operationState.Errors});
 
             await _emailService.SendAsync(
                 new PasswordSetConfirmationEmail(currentUserDetails, _identityManagementServiceConfiguration),
@@ -216,7 +221,7 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] [Required] UpdateModel model,
             CancellationToken cancellationToken)
         {
-            await _userService.UpdateAsync(new User
+            var operationState = await _userService.UpdateAsync(new User
             {
                 Id = id,
                 FirstName = model.FirstName,
@@ -224,6 +229,9 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
                 LastName = model.LastName,
                 Email = model.Email
             }, cancellationToken);
+
+            if (operationState.Errors.Any())
+                return BadRequest(new { errors = operationState.Errors });
 
             return Ok();
         }
@@ -239,10 +247,11 @@ namespace Glasswall.IdentityManagementService.Api.Controllers
             if (!Guid.TryParse(_tokenService.GetIdentifier(token), out var userId))
                 return BadRequest(new {message = "Token identifier was not valid"});
 
-            if (userId == id)
-                return BadRequest(new {message = "Cannot delete yourself"});
+            if (userId == id) return BadRequest(new {message = "Cannot delete yourself"});
 
-            await _userService.DeleteAsync(id, cancellationToken);
+            var operationState = await _userService.DeleteAsync(id, cancellationToken);
+
+            if (operationState.Errors.Any()) return BadRequest(new { errors = operationState.Errors });
 
             return Ok();
         }

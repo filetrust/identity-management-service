@@ -3,6 +3,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Business.Store;
+using Glasswall.IdentityManagementService.Common.Models.Store;
+using Glasswall.IdentityManagementService.Common.Services;
 using Glasswall.IdentityManagementService.Common.Store;
 using Moq;
 using Newtonsoft.Json;
@@ -14,8 +16,8 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
     [TestFixture]
     public class WhenUpdatingUser : UserMetadataSearchStrategyTestBase
     {
-        private string _filePath;
-        private MemoryStream _memoryStream;
+        private UserEditOperationState _output;
+        private User _inputUser;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -24,16 +26,27 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
 
             FileStore.Setup(s => s.SearchAsync(It.IsAny<string>(), It.IsAny<UserMetadataSearchStrategy>(),
                     It.IsAny<CancellationToken>()))
-                .Returns(new[] {_filePath = $"{ValidUser.Id}.json"}.AsAsyncEnumerable());
+                .Returns(new[] {$"{ValidUser.Id}.json"}.AsAsyncEnumerable());
 
             FileStore.Setup(s => s.ExistsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
             FileStore.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_memoryStream =
-                    new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
+                .ReturnsAsync(new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
+            _inputUser = CreateUser();
+            _inputUser.Id = ValidUser.Id;
+            _output = await ClassInTest.UpdateAsync(_inputUser, TestCancellationToken);
+        }
 
-            await ClassInTest.UpdateAsync(ValidUser, TestCancellationToken);
+        [Test]
+        public void Output_Is_Correct()
+        {
+            Assert.That(_output.User.Id, Is.EqualTo(_inputUser.Id));
+            Assert.That(_output.User.Email, Is.EqualTo(_inputUser.Email));
+            Assert.That(_output.User.FirstName, Is.EqualTo(_inputUser.FirstName));
+            Assert.That(_output.User.LastName, Is.EqualTo(_inputUser.LastName));
+            Assert.That(_output.User.Username, Is.EqualTo(_inputUser.Username));
+            Assert.That(_output.User.Status, Is.EqualTo(_inputUser.Status));
         }
 
         [Test]

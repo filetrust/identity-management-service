@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Business.Store;
 using Glasswall.IdentityManagementService.Common.Models.Store;
+using Glasswall.IdentityManagementService.Common.Services;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -17,8 +18,9 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
     public class WhenCreatingUser : UserMetadataSearchStrategyTestBase
     {
         private string _filePath;
-        private User _output;
+        private UserEditOperationState _output;
         private MemoryStream _memoryStream;
+        private User _inputUser;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -29,14 +31,14 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
                     It.IsAny<CancellationToken>()))
                 .Returns(new[] {_filePath = $"{ValidUser.Id}.json"}.AsAsyncEnumerable());
 
-            FileStore.Setup(s => s.ExistsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            FileStore.Setup(s => s.ExistsAsync(It.Is<string>(f => f == $"{ValidUser.Id}.json"), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
             FileStore.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_memoryStream =
                     new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser))));
 
-            _output = await ClassInTest.CreateAsync(ValidUser, TestCancellationToken);
+            _output = await ClassInTest.CreateAsync(_inputUser = CreateUser(), TestCancellationToken);
         }
 
         [OneTimeTearDown]
@@ -48,7 +50,7 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
         [Test]
         public void User_Is_Returned()
         {
-            Assert.That(_output, Is.EqualTo(ValidUser));
+            Assert.That(_output.User, Is.EqualTo(_inputUser));
         }
 
         [Test]
@@ -58,12 +60,13 @@ namespace Glasswall.IdentityManagementService.Business.Tests.Services.UserServic
                 It.Is<CancellationToken>(f => f == TestCancellationToken)));
 
             FileStore.Verify(s => s.WriteAsync(
-                    It.Is<string>(f => f == _filePath),
-                    It.Is<byte[]>(f => BytesEqual(f, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ValidUser)))),
+                    It.Is<string>(f => f == $"{_inputUser.Id}.json"),
+                    It.Is<byte[]>(f => BytesEqual(f, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_inputUser)))),
                     It.Is<CancellationToken>(f => f == TestCancellationToken)),
                 Times.Once);
             FileStore.Verify(s => s.ReadAsync(_filePath, It.Is<CancellationToken>(f => f == TestCancellationToken)));
             FileStore.Verify(s => s.ExistsAsync(_filePath, It.Is<CancellationToken>(f => f == TestCancellationToken)));
+            FileStore.Verify(s => s.ExistsAsync($"{_inputUser.Id}.json", It.Is<CancellationToken>(f => f == TestCancellationToken)));
 
             FileStore.VerifyNoOtherCalls();
         }

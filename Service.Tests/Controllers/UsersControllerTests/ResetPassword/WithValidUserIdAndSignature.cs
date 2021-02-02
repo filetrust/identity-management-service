@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Common.Models.Dto;
 using Glasswall.IdentityManagementService.Common.Models.Email;
 using Glasswall.IdentityManagementService.Common.Models.Store;
+using Glasswall.IdentityManagementService.Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -17,7 +18,6 @@ namespace Service.Tests.Controllers.UsersControllerTests.ResetPassword
     {
         private ResetPasswordModel _input;
         private IActionResult _output;
-        private string _validToken;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -26,13 +26,17 @@ namespace Service.Tests.Controllers.UsersControllerTests.ResetPassword
 
             _input = new ResetPasswordModel
             {
-                Token = _validToken = "Some token",
+                Token = "Some token",
                 Password = "Some new Password"
             };
 
             UserService.Setup(s =>
                     s.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(ValidUser);
+
+            UserService.Setup(s =>
+                    s.UpdatePasswordAsync(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new UserEditOperationState());
 
             TokenService.Setup(s => s.GetIdentifier(It.IsAny<string>()))
                 .Returns(ValidUser.Id.ToString());

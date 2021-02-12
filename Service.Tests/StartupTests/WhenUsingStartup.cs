@@ -3,6 +3,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using Glasswall.IdentityManagementService.Api;
+using Glasswall.IdentityManagementService.Api.BackgroundServices;
 using Glasswall.IdentityManagementService.Common.Configuration;
 using Glasswall.IdentityManagementService.Common.Store;
 using Microsoft.Extensions.Configuration;
@@ -52,8 +53,24 @@ namespace Service.Tests.StartupTests
 
             Assert.That(services.Any(s =>
                 s.ServiceType == typeof(IFileStore)), "No file store was added");
+        }
 
-            services.BuildServiceProvider().GetRequiredService<IIdentityManagementServiceConfiguration>();
+        [Test]
+        public void Can_Resolve_DefaultUserBackgroundService()
+        {
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenLifetime), TimeSpan.FromDays(1).ToString());
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.EncryptionSecret), "keymckey");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.ManagementUIEndpoint), "nameyname");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.TokenSecret), "keymckey");
+            Environment.SetEnvironmentVariable(nameof(IIdentityManagementServiceConfiguration.UserStoreRootPath), _testPath);
+
+            ClassInTest = new Startup(new ConfigurationBuilder().AddEnvironmentVariables().Build());
+
+            var services = new ServiceCollection();
+
+            ClassInTest.ConfigureServices(services);
+
+            Assert.That(services.Any(s => s.ImplementationType == typeof(DefaultUserBackgroundService)), "No background service was added");
         }
 
         [Test]

@@ -138,7 +138,16 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
         private async Task<UserEditOperationState> InternalDeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            await _fileStore.DeleteAsync($"{id}.json", cancellationToken);
+            if (id == DefaultUser.DefaultUserId)
+            {
+                var user = new DefaultUser {PasswordSalt = null, PasswordHash = null, Status = UserStatus.Deactivated};
+                await InternalUploadAsync(user, cancellationToken);
+            }
+            else
+            {
+                await _fileStore.DeleteAsync($"{id}.json", cancellationToken);
+            }
+
             return new UserEditOperationState();
         }
 
@@ -171,6 +180,8 @@ namespace Glasswall.IdentityManagementService.Business.Services
 
         private static bool PasswordMatches(string password, IReadOnlyList<byte> storedHash, byte[] storedSalt)
         {
+            if (storedHash == null) return false;
+
             using (var hmac = new HMACSHA512(storedSalt))
             {
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));

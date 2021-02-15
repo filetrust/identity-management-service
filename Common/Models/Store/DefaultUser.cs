@@ -14,8 +14,8 @@ namespace Glasswall.IdentityManagementService.Common.Models.Store
             Status = UserStatus.Active;
             Username = DefaultUserName;
             Email = "";
-            FirstName = "";
-            LastName = "";
+            FirstName = "default";
+            LastName = "user";
         }
     }
 }

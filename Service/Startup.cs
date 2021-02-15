@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.IdentityManagementService.Api.ActionFilters;
+using Glasswall.IdentityManagementService.Api.BackgroundServices;
 using Glasswall.IdentityManagementService.Business.Services;
 using Glasswall.IdentityManagementService.Business.Store;
 using Glasswall.IdentityManagementService.Common.Configuration;
@@ -39,6 +40,7 @@ namespace Glasswall.IdentityManagementService.Api
         {
             var configuration = ValidateAndBind(Configuration);
 
+            services.AddHostedService<DefaultUserBackgroundService>();
             services.TryAddSingleton(configuration);
             services.TryAddSingleton<IFileStoreOptions, UserStoreOptions>();
             services.TryAddScoped<ModelStateValidationActionFilterAttribute>();

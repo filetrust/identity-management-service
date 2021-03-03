@@ -1,28 +1,26 @@
 {
   "files": {
-    "main.css": "/identity-management-service/static/css/main.da2a08cc.chunk.css",
-    "main.js": "/identity-management-service/static/js/main.0151a5ca.chunk.js",
-    "main.js.map": "/identity-management-service/static/js/main.0151a5ca.chunk.js.map",
-    "runtime-main.js": "/identity-management-service/static/js/runtime-main.e016b204.js",
-    "runtime-main.js.map": "/identity-management-service/static/js/runtime-main.e016b204.js.map",
-    "static/css/2.189a0f4d.chunk.css": "/identity-management-service/static/css/2.189a0f4d.chunk.css",
-    "static/js/2.e45027bc.chunk.js": "/identity-management-service/static/js/2.e45027bc.chunk.js",
-    "static/js/2.e45027bc.chunk.js.map": "/identity-management-service/static/js/2.e45027bc.chunk.js.map",
+    "main.css": "/identity-management-service/static/css/main.cc0206c4.chunk.css",
+    "main.js": "/identity-management-service/static/js/main.26020a17.chunk.js",
+    "main.js.map": "/identity-management-service/static/js/main.26020a17.chunk.js.map",
+    "runtime-main.js": "/identity-management-service/static/js/runtime-main.9a195e2e.js",
+    "runtime-main.js.map": "/identity-management-service/static/js/runtime-main.9a195e2e.js.map",
+    "static/css/2.5bfa3167.chunk.css": "/identity-management-service/static/css/2.5bfa3167.chunk.css",
+    "static/js/2.a327e8a9.chunk.js": "/identity-management-service/static/js/2.a327e8a9.chunk.js",
+    "static/js/2.a327e8a9.chunk.js.map": "/identity-management-service/static/js/2.a327e8a9.chunk.js.map",
     "index.html": "/identity-management-service/index.html",
-    "precache-manifest.ebb884f7f62aa229f91978e1319f85a6.js": "/identity-management-service/precache-manifest.ebb884f7f62aa229f91978e1319f85a6.js",
-    "service-worker.js": "/identity-management-service/service-worker.js",
-    "static/css/2.189a0f4d.chunk.css.map": "/identity-management-service/static/css/2.189a0f4d.chunk.css.map",
-    "static/css/main.da2a08cc.chunk.css.map": "/identity-management-service/static/css/main.da2a08cc.chunk.css.map",
-    "static/js/2.e45027bc.chunk.js.LICENSE.txt": "/identity-management-service/static/js/2.e45027bc.chunk.js.LICENSE.txt",
-    "static/media/api.yaml": "/identity-management-service/static/media/api.8c2bb994.yaml",
-    "static/media/App.css": "/identity-management-service/static/media/roboto-regular-webfont.d96d07c1.woff2",
-    "static/media/logo.svg": "/identity-management-service/static/media/logo.6c8e5727.svg"
+    "static/css/2.5bfa3167.chunk.css.map": "/identity-management-service/static/css/2.5bfa3167.chunk.css.map",
+    "static/css/main.cc0206c4.chunk.css.map": "/identity-management-service/static/css/main.cc0206c4.chunk.css.map",
+    "static/js/2.a327e8a9.chunk.js.LICENSE.txt": "/identity-management-service/static/js/2.a327e8a9.chunk.js.LICENSE.txt",
+    "static/media/api.yaml": "/identity-management-service/static/media/api.0a93a78c.yaml",
+    "static/media/App.css": "/identity-management-service/static/media/roboto-regular-webfont.bc6beab4.woff",
+    "static/media/logo.21eab872.svg": "/identity-management-service/static/media/logo.21eab872.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.e016b204.js",
-    "static/css/2.189a0f4d.chunk.css",
-    "static/js/2.e45027bc.chunk.js",
-    "static/css/main.da2a08cc.chunk.css",
-    "static/js/main.0151a5ca.chunk.js"
+    "static/js/runtime-main.9a195e2e.js",
+    "static/css/2.5bfa3167.chunk.css",
+    "static/js/2.a327e8a9.chunk.js",
+    "static/css/main.cc0206c4.chunk.css",
+    "static/js/main.26020a17.chunk.js"
   ]
 }

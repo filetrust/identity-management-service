@@ -11,7 +11,7 @@
     "react-scripts": "^4.0.3",
     "react-test-renderer": "^16.13.1",
     "react-toastify": "^6.0.5",
-    "react-transition-group": "^4.3.0",
+    "react-transition-group": "^4.4.2",
     "swagger-ui-react": "^3.25.0"
   },
   "devDependencies": {
